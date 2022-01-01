@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/blueBg.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/blue_confirm_button.xml" value="0.221875" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/blue_login_button.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/btn.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/et_bg.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/ok.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable/login_button.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_back.xml" value="0.33" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_check.xml" value="0.3509963768115942" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_equipment.xml" value="0.23777173913043478" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_gymRoom.xml" value="0.3509963768115942" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_login.xml" value="0.3509963768115942" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_main.xml" value="0.25181159420289856" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_room.xml" value="0.5" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_runningMachine.xml" value="0.3509963768115942" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_history.xml" value="0.1" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_home.xml" value="0.14444444444444443" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_inspection.xml" value="0.20572916666666666" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/item.xml" value="0.3509963768115942" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/item_two.xml" value="0.3509963768115942" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/layout.xml" value="0.28306159420289856" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/menu/bottom_navigation.xml" value="0.20572916666666666" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/inspectionFragment">
 
     <fragment
         android:id="@+id/historyFragment"
@@ -11,10 +11,10 @@
         android:label="History"
         tools:layout="@layout/fragment_history" />
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.example.intelligentequipmentinspectionsystem.HomeFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/inspectionFragment"
+        android:name="com.example.intelligentequipmentinspectionsystem.InspectionFragment"
+        android:label="Inspection"
+        tools:layout="@layout/fragment_inspection" />
     <fragment
         android:id="@+id/cameraFragment"
         android:name="com.example.intelligentequipmentinspectionsystem.CameraFragment"
