@@ -19,6 +19,7 @@
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_search_24"/>
         <EditText
+            android:id="@+id/roomSearchBar"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:hint="請選擇檢查地點"
@@ -26,8 +27,10 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/roomRecyclerView"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

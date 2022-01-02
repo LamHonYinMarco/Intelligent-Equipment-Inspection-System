@@ -1,14 +1,23 @@
 package com.example.intelligentequipmentinspectionsystem;
 
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +25,8 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class InspectionFragment extends Fragment {
+    private RecyclerView recyclerView;
+    private EditText searchBar;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,20 +71,67 @@ public class InspectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-                DataService dataService = new DataService(getContext());
-                dataService.getRoomName(new DataService.VolleyResponseListener() {
+        View view = inflater.inflate(R.layout.fragment_inspection, container, false);
+        recyclerView = (RecyclerView) view.findViewById(R.id.roomRecyclerView);
+        searchBar = (EditText) view.findViewById(R.id.roomSearchBar);
+
+        DataService dataService = new DataService(getContext());
+        dataService.getRoomName(new DataService.VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onResponse(List<String> data1, List<String> data2, List<String> id) {
+                System.out.println("Front Room Name: " + data1);
+                setRecyclerView(data1, data2, id);
+                searchBar.addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void onError(String message) {
-                        System.out.println("Front Error: "+ message);
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
                     }
 
                     @Override
-                    public void onResponse(List<String> data) {
-                        System.out.println("Front Room Name: "+ data);
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        List<Room> rooms = new ArrayList<>();
+                        List<String> filteredData1 = new ArrayList<>();
+                        List<String> filteredData2 = new ArrayList<>();
+                        List<String> filteredId = new ArrayList<>();
+                        for (int i = 0; i < data1.size(); i++) {
+                            Room room = new Room(data1.get(i), data2.get(i), id.get(i));
+                            rooms.add(room);
+                        }
+                        try {
+                            List<Room> filter = rooms.stream()
+                                    .filter(c -> c.getRoomName().toLowerCase().contains(editable.toString().toLowerCase()) || c.getRoomLocation().toLowerCase().contains(editable.toString().toLowerCase()))
+                                    .collect(Collectors.toList());
+                            filter.forEach(room -> {
+                                filteredData1.add(room.getRoomName());
+                                filteredData2.add(room.getRoomLocation());
+                            });
+                            System.out.println("filteredData1: " + filteredData1);
+                            setRecyclerView(filteredData1, filteredData2, filteredId);
+                        } catch (Exception e) {
+                        }
                     }
                 });
+            }
+        });
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_inspection, container, false);
+        return view;
+    }
+
+    public void setRecyclerView(List<String> data1, List<String> data2, List<String> id) {
+        RoomAdapter roomAdapter = new RoomAdapter(getContext(), data1, data2, id);
+        recyclerView.setAdapter(roomAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 }

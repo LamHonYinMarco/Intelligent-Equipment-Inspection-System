@@ -14,10 +14,29 @@
         android:id="@+id/inspectionFragment"
         android:name="com.example.intelligentequipmentinspectionsystem.InspectionFragment"
         android:label="Inspection"
-        tools:layout="@layout/fragment_inspection" />
+        tools:layout="@layout/fragment_inspection" >
+        <action
+            android:id="@+id/action_inspectionFragment_to_equipmentFragment"
+            app:destination="@id/equipmentFragment" />
+    </fragment>
     <fragment
         android:id="@+id/cameraFragment"
         android:name="com.example.intelligentequipmentinspectionsystem.CameraFragment"
-        android:label="fragment_camera"
+        android:label="Camera"
         tools:layout="@layout/fragment_camera" />
+    <fragment
+        android:id="@+id/equipmentFragment"
+        android:name="com.example.intelligentequipmentinspectionsystem.EquipmentFragment"
+        android:label="Equipment"
+        tools:layout="@layout/fragment_equipment" >
+        <argument
+            android:name="equipmentName"
+            app:argType="string[]" />
+        <argument
+            android:name="equipmentModifiedAt"
+            app:argType="string[]" />
+        <argument
+            android:name="equipmentId"
+            app:argType="string[]" />
+    </fragment>
 </navigation>
