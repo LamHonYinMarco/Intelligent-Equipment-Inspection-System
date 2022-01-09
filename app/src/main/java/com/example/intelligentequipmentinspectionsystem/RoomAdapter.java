@@ -39,6 +39,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 try {
+                    System.out.println("holder.getAdapterPosition(): "+ holder.getAdapterPosition());
                     strId = id.get(holder.getAdapterPosition());
                 } catch (Exception e) {
                 }

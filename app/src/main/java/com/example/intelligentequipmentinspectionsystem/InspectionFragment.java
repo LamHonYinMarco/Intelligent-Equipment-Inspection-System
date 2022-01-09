@@ -115,6 +115,7 @@ public class InspectionFragment extends Fragment {
                             filter.forEach(room -> {
                                 filteredData1.add(room.getRoomName());
                                 filteredData2.add(room.getRoomLocation());
+                                filteredId.add(room.getRoomId());
                             });
                             System.out.println("filteredData1: " + filteredData1);
                             setRecyclerView(filteredData1, filteredData2, filteredId);
