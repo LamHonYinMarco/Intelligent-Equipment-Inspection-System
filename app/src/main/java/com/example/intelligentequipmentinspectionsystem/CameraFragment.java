@@ -5,8 +5,13 @@ import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -17,6 +22,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 /**
@@ -32,6 +38,8 @@ public class CameraFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     public static final int CAMERA_REQUEST = 1;
     private LinearLayout takePicture;
+    private ImageView imageView;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -71,12 +79,20 @@ public class CameraFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Bundle bundle = result.getData().getExtras();
+                Bitmap bitmap = (Bitmap) bundle.get("data");
+                imageView.setImageBitmap(bitmap);
+            }
+        });
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST);
         } else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivity(takePictureIntent);
+            activityResultLauncher.launch(takePictureIntent);
         }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_camera, container, false);
@@ -86,6 +102,7 @@ public class CameraFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         takePicture = (LinearLayout) view.findViewById(R.id.take_picture);
+        imageView = (ImageView) view.findViewById(R.id.picture_taken);
         takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,9 +111,11 @@ public class CameraFragment extends Fragment {
                     ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, CAMERA_REQUEST);
                 } else {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivity(takePictureIntent);
+                    activityResultLauncher.launch(takePictureIntent);
                 }
             }
         });
     }
+
+
 }
