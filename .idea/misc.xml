@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/debug/res/drawable/form_outline.xml" value="0.3828125" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/blueBg.xml" value="0.3828125" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/blue_confirm_button.xml" value="0.221875" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/blue_login_button.xml" value="0.3828125" />
@@ -10,6 +11,7 @@
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/et_bg.xml" value="0.3828125" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3828125" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/ok.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable-v24/outline.xml" value="0.3828125" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.3828125" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable/ic_baseline_logout_24.xml" value="0.3828125" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/drawable/login_button.xml" value="0.3828125" />
@@ -23,16 +25,21 @@
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/activity_runningMachine.xml" value="0.3509963768115942" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_camera.xml" value="0.2694746376811594" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_equipment.xml" value="0.22" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_form.xml" value="0.20121951219512196" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_history.xml" value="0.1" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_home.xml" value="0.14444444444444443" />
-        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_inspection.xml" value="0.1" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_inspection.xml" value="0.33" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/fragment_settings.xml" value="0.33" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/item.xml" value="0.3509963768115942" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/item_two.xml" value="0.3509963768115942" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/layout.xml" value="0.28306159420289856" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/login.xml" value="0.2694746376811594" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/one_string_row.xml" value="0.25" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/question_row.xml" value="0.33" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/layout/two_string_row.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/menu/bottom_navigation.xml" value="0.20572916666666666" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3828125" />
+        <entry key="..\:/Users/user/Desktop/School VTC NEW/FYP/Intelligent Equipment Inspection System/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3828125" />
       </map>
     </option>
   </component>

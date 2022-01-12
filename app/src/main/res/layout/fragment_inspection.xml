@@ -22,7 +22,7 @@
             android:id="@+id/roomSearchBar"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:hint="請選擇檢查地點"
+            android:hint="Type room name or location"
             android:layout_weight="9"/>
     </LinearLayout>
 

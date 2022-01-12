@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -77,17 +76,30 @@ public class EquipmentFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.equipmentRecyclerView);
         if (getArguments() != null) {
             EquipmentFragmentArgs args = EquipmentFragmentArgs.fromBundle(getArguments());
-            System.out.println("The stuff: " + getContext() +Arrays.asList(args.getEquipmentName()).toString() + Arrays.asList(args.getEquipmentModifiedAt()).toString() + Arrays.asList(args.getEquipmentId()).toString());
-            recyclerView = (RecyclerView) view.findViewById(R.id.equipmentRecyclerView);
-            List<String> formatDate = new ArrayList<>();
-            Arrays.asList(args.getEquipmentModifiedAt()).forEach(str -> {
-                formatDate.add("Last Modified: "+str.substring(0,10));
+
+            DataService dataService = new DataService(getContext());
+            dataService.getEquipmentsByRoomId(args.getRoomId(), new DataService.VolleyResponseListenerForList() {
+                @Override
+                public void onError(String message) {
+
+                }
+
+                @Override
+                public void onResponse(List<String> data1, List<String> data2, List<String> roomId) {
+
+                    List<String> formatDate = new ArrayList<>();
+                    data2.forEach(str -> {
+                        formatDate.add("Last Modified: "+str.substring(0,10));
+                    });
+
+                    EquipmentAdapter equipmentAdapter = new EquipmentAdapter(getContext(), data1, formatDate, roomId, args.getRoomId());
+                    recyclerView.setAdapter(equipmentAdapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                }
             });
-            EquipmentAdapter equipmentAdapter = new EquipmentAdapter(getContext(), Arrays.asList(args.getEquipmentName()), formatDate, Arrays.asList(args.getEquipmentId()));
-            recyclerView.setAdapter(equipmentAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         }
 
     }

@@ -19,14 +19,13 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     Context context;
     List<String> data1;
     List<String> data2;
-    List<String> id;
-    String strId = "";
+    List<String> roomIds;
 
-    public RoomAdapter(Context context, List<String> data1, List<String> data2, List<String> id) {
+    public RoomAdapter(Context context, List<String> data1, List<String> data2, List<String> roomIds) {
         this.context = context;
         this.data1 = data1;
         this.data2 = data2;
-        this.id = id;
+        this.roomIds = roomIds;
     }
 
     @NonNull
@@ -40,24 +39,11 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
             public void onClick(View view) {
                 try {
                     System.out.println("holder.getAdapterPosition(): "+ holder.getAdapterPosition());
-                    strId = id.get(holder.getAdapterPosition());
+                    NavController navController = Navigation.findNavController(view);
+                    InspectionFragmentDirections.ActionInspectionFragmentToEquipmentFragment action = InspectionFragmentDirections.actionInspectionFragmentToEquipmentFragment(roomIds.get(holder.getAdapterPosition()));
+                    navController.navigate(action);
                 } catch (Exception e) {
                 }
-                DataService dataService = new DataService(context);
-                System.out.println("onClick Room ID: " + strId);
-                dataService.getEquipment(strId, new DataService.VolleyResponseListener() {
-                    @Override
-                    public void onError(String message) {
-
-                    }
-
-                    @Override
-                    public void onResponse(List<String> data1, List<String> data2, List<String> id) {
-                        NavController navController = Navigation.findNavController(view);
-                        InspectionFragmentDirections.ActionInspectionFragmentToEquipmentFragment action = InspectionFragmentDirections.actionInspectionFragmentToEquipmentFragment(data1.toArray(new String[0]),data2.toArray(new String[0]),id.toArray(new String[0]));
-                        navController.navigate(action);
-                    }
-                });
             }
         });
         return holder;

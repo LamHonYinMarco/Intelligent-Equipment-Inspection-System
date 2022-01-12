@@ -76,7 +76,7 @@ public class InspectionFragment extends Fragment {
         searchBar = (EditText) view.findViewById(R.id.roomSearchBar);
 
         DataService dataService = new DataService(getContext());
-        dataService.getRoomName(new DataService.VolleyResponseListener() {
+        dataService.getRooms(new DataService.VolleyResponseListenerForList() {
             @Override
             public void onError(String message) {
 
