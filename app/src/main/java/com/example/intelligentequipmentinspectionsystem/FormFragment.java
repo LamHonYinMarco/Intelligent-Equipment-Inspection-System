@@ -123,9 +123,31 @@ public class FormFragment extends Fragment {
             List<String> listOfQuestionTitles = new ArrayList<>();
             listOfQuestionTitles.add("How is the handle");
             listOfQuestionTitles.add("How is the door frame");
+            listOfQuestionTitles.add("Q3");
+            listOfQuestionTitles.add("Q4");
+            listOfQuestionTitles.add("Q5");
+            listOfQuestionTitles.add("Q6");
+            listOfQuestionTitles.add("Q7");
+            listOfQuestionTitles.add("Q8");
+            listOfQuestionTitles.add("Q9");
+            listOfQuestionTitles.add("Q10");
+            listOfQuestionTitles.add("Q11");
+            listOfQuestionTitles.add("Q12");
+
             List<String> listOfQuestionId = new ArrayList<>();
             listOfQuestionId.add("1");
             listOfQuestionId.add("2");
+            listOfQuestionId.add("3");
+            listOfQuestionId.add("4");
+            listOfQuestionId.add("5");
+            listOfQuestionId.add("6");
+            listOfQuestionId.add("7");
+            listOfQuestionId.add("8");
+            listOfQuestionId.add("9");
+            listOfQuestionId.add("10");
+            listOfQuestionId.add("11");
+            listOfQuestionId.add("12");
+
             FormAdapter formAdapter = new FormAdapter(getContext(), listOfQuestionTitles, listOfQuestionId);
             recyclerView.setAdapter(formAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -133,10 +155,15 @@ public class FormFragment extends Fragment {
             sendForm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast toast = Toast.makeText(getContext(),"Form Sent", Toast.LENGTH_SHORT);
-                    toast.show();
-                    NavController navController = Navigation.findNavController(view);
-                    navController.navigateUp();
+                    if(formAdapter.validation()) {
+                        Toast toast = Toast.makeText(getContext(), "Form Sent", Toast.LENGTH_SHORT);
+                        toast.show();
+                        NavController navController = Navigation.findNavController(view);
+                        navController.navigateUp();
+                    } else {
+                        Toast toast = Toast.makeText(getContext(), "Please Fill All Questions and Problems", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 }
             });
         }

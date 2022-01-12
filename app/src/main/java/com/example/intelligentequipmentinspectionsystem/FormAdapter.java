@@ -1,6 +1,9 @@
 package com.example.intelligentequipmentinspectionsystem;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +16,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
-    Context context;
-    List<String> questionTitles;
-    List<String> questionIds;
+    private Context context;
+    private List<String> questionTitles;
+    private List<String> questionIds;
+    private List<String> toDoList;
+//    private boolean warningMode = false;
 
     public FormAdapter(Context context, List<String> questionTitles, List<String> questionIds) {
         this.context = context;
         this.questionTitles = questionTitles;
         this.questionIds = questionIds;
+        toDoList = new ArrayList<>(questionIds);
     }
 
     @NonNull
@@ -33,14 +40,54 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
         View view = inflater.inflate(R.layout.question_row, parent, false);
 
         final ViewHolder holder = new ViewHolder(view);
+
         holder.goodOrBad.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if(i == R.id.bad){
+                if (i == R.id.bad) {
+                    // if bad is selected make sure it isn't removed from toDoList yet
+                    if (!toDoList.contains(questionIds.get(holder.getAdapterPosition()))) {
+                        toDoList.add(questionIds.get(holder.getAdapterPosition()));
+                    }
+                    // show reason editText
                     holder.reason.setVisibility(View.VISIBLE);
                 } else {
+                    // if selected good remove that question from toDoList
                     holder.reason.setVisibility(View.GONE);
+                    try {
+                        toDoList.remove(questionIds.get(holder.getAdapterPosition()));
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
                 }
+                System.out.println("toDoList" + toDoList);
+                System.out.println("questionIds" + questionIds);
+            }
+        });
+
+        // if user have added something to the reason then it can be removed from the to do list
+        holder.reason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+                    toDoList.remove(questionIds.get(holder.getAdapterPosition()));
+                } else {
+                    if (!toDoList.contains(questionIds.get(holder.getAdapterPosition()))) {
+                        toDoList.add(questionIds.get(holder.getAdapterPosition()));
+                    }
+                }
+                System.out.println("toDoList" + toDoList);
+                System.out.println("questionIds" + questionIds);
             }
         });
         return holder;
@@ -49,11 +96,17 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.questionTitleTV.setText(questionTitles.get(position));
-        if(holder.goodOrBad.getCheckedRadioButtonId() == R.id.bad){
-            holder.reason.setVisibility(View.VISIBLE);
-        } else {
-            holder.reason.setVisibility(View.GONE);
-        }
+//        if(warningMode){
+//            System.out.println("it ran");
+//            if(questionIds.get(holder.getAdapterPosition()).contains(toDoList.toString())){
+//                holder.questionTitleTV.setTextColor(Color.RED);
+//            }
+//        }
+//        if(holder.goodOrBad.getCheckedRadioButtonId() == R.id.bad){
+//            holder.reason.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.reason.setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -80,4 +133,9 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
             linearLayout = (LinearLayout) itemView.findViewById(R.id.questionRow);
         }
     }
+
+    public boolean validation() {
+        return toDoList.isEmpty();
+    }
+
 }
