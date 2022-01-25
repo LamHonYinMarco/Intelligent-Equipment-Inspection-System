@@ -1,29 +1,35 @@
 package com.example.intelligentequipmentinspectionsystem;
 
-import android.content.Context;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataService {
-    public static final String roomUrl = "http://10.0.2.2:8000/api/room/";
-    public static final String equipmentUrl = "http://10.0.2.2:8000/api/equipment/";
-    Context context;
-    //    public List<String> getRoom(){
-//
-//        return
-//    }
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
-    public DataService(Context context) {
-        this.context = context;
+public class DataService {
+    JSONArray jsonArray;
+    JSONObject jsonObject;
+    public DataService() {
+    }
+
+    private interface ReturnJsonArray {
+        void onError(String message);
+
+        void onResponse(JSONArray jsonArray);
+    }
+
+    private interface ReturnJsonObject {
+        void onError(String message);
+
+        void onResponse(JSONObject jsonObject);
     }
 
     public interface VolleyResponseListenerForList {
@@ -44,19 +50,28 @@ public class DataService {
         void onResponse(List<String> questionTitles, List<String> questionIds);
     }
 
+    public void getToken(VolleyResponseListenerForSingle volleyResponseListenerForSingle) {
+
+    }
+
     public void getRooms(VolleyResponseListenerForList volleyResponseListenerForList) {
-        String url = roomUrl;
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+        List<String> roomNames = new ArrayList<>();
+        List<String> roomLocations = new ArrayList<>();
+        List<String> roomIds = new ArrayList<>();
+        getJSONArray("room", new ReturnJsonArray() {
             @Override
-            public void onResponse(JSONArray response) {
-                List<String> roomNames = new ArrayList<>();
-                List<String> roomLocations = new ArrayList<>();
-                List<String> roomIds = new ArrayList<>();
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onResponse(JSONArray jsonArray) {
                 try {
-                    for (int i = 0; i < response.length(); i++) {
-                        roomNames.add(response.getJSONObject(i).getString("roomName"));
-                        roomLocations.add(response.getJSONObject(i).getString("location"));
-                        roomIds.add(response.getJSONObject(i).getString("roomId"));
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        roomNames.add(jsonArray.getJSONObject(i).getString("room_name"));
+                        roomLocations.add(jsonArray.getJSONObject(i).getString("location"));
+                        roomIds.add(jsonArray.getJSONObject(i).getString("id"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -66,127 +81,160 @@ public class DataService {
                 System.out.println("DataService getRoomName Room IDs: " + roomIds);
                 volleyResponseListenerForList.onResponse(roomNames, roomLocations, roomIds);
             }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println("DataService Error: " + error);
-                volleyResponseListenerForList.onError("" + error);
-            }
         });
-        // Access the RequestQueue through your singleton class.
-        MySingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
+
     }
 
     public void getEquipmentsByRoomId(String id, VolleyResponseListenerForList volleyResponseListenerForList) {
-        String url = equipmentUrl;
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+        List<String> equipmentNames = new ArrayList<>();
+        List<String> equipmentCode = new ArrayList<>();
+        List<String> equipmentId = new ArrayList<>();
+        System.out.println("DataService getEquipment Room ID: " + id);
+        getJSONArray("equipment", new ReturnJsonArray() {
             @Override
-            public void onResponse(JSONArray response) {
-                List<String> equipmentNames = new ArrayList<>();
-                List<String> equipmentModifiedAt = new ArrayList<>();
-                List<String> equipmentId = new ArrayList<>();
-                System.out.println("DataService getEquipment Room ID: " + id);
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onResponse(JSONArray jsonArray) {
                 try {
-                    for (int i = 0; i < response.length(); i++) {
-                        if(response.getJSONObject(i).getString("room").equals(id)){
-                            equipmentNames.add(response.getJSONObject(i).getString("equipmentName"));
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        if (jsonArray.getJSONObject(i).getString("room").equals(id)) {
+                            equipmentNames.add(jsonArray.getJSONObject(i).getString("equipment_name"));
 
                             // TODO: change to form modifiedAt
-                            equipmentModifiedAt.add(response.getJSONObject(i).getString("modifiedAt"));
+                            equipmentCode.add(jsonArray.getJSONObject(i).getString("equipment_code"));
 
-                            equipmentId.add(response.getJSONObject(i).getString("equipmentId"));
+                            equipmentId.add(jsonArray.getJSONObject(i).getString("id"));
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 System.out.println("DataService Equipment Names: " + equipmentNames);
-                System.out.println("DataService Equipment Modified At: " + equipmentModifiedAt);
+                System.out.println("DataService Equipment Code: " + equipmentCode);
                 System.out.println("DataService Equipment ID: " + equipmentId);
-                volleyResponseListenerForList.onResponse(equipmentNames, equipmentModifiedAt, equipmentId);
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println("DataService Error: " + error);
-                volleyResponseListenerForList.onError("" + error);
+                volleyResponseListenerForList.onResponse(equipmentNames, equipmentCode, equipmentId);
             }
         });
-        // Access the RequestQueue through your singleton class.
-        MySingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
     }
 
     public void getRoomById(String id, VolleyResponseListenerForSingle volleyResponseListenerForSingle) {
-        String url = roomUrl;
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        temporaryGet("room/" + id, new ReturnJsonObject() {
             @Override
-            public void onResponse(JSONArray response) {
-                String roomName = "";
-                String roomLocation = "";
+            public void onError(String message) {
+            }
+
+            @Override
+            public void onResponse(JSONObject jsonObject) {
                 try {
-                    for (int i = 0; i < response.length(); i++) {
-                        if(response.getJSONObject(i).getString("roomId").equals(id)){
-
-                        }
-                        roomName = response.getJSONObject(i).getString("roomName");
-                        roomLocation = response.getJSONObject(i).getString("location");
-
-                    }
+                    String roomName = jsonObject.getString("room_name");
+                    String roomLocation = jsonObject.getString("location");
+                    volleyResponseListenerForSingle.onResponse(roomName, roomLocation);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                volleyResponseListenerForSingle.onResponse(roomName, roomLocation);
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println("DataService Error: " + error);
-                volleyResponseListenerForSingle.onError("" + error);
             }
         });
+
+
         // Access the RequestQueue through your singleton class.
-        MySingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
+//        MySingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
     }
 
     public void getEquipmentById(String id, VolleyResponseListenerForSingle volleyResponseListenerForSingle) {
-        String url = equipmentUrl;
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        System.out.println("DataService getEquipment Room ID: " + id);
+        temporaryGet("equipment/" + id, new ReturnJsonObject() {
             @Override
-            public void onResponse(JSONArray response) {
-                String equipmentName = "";
-                String equipmentModifiedAt = "";
-                System.out.println("DataService getEquipment Room ID: " + id);
-                try {
-                    for (int i = 0; i < response.length(); i++) {
-                        if(response.getJSONObject(i).getString("equipmentId").equals(id)){
-                            equipmentName = response.getJSONObject(i).getString("equipmentName");
+            public void onError(String message) {
 
-                            // TODO: change to equipment code
-                            equipmentModifiedAt = response.getJSONObject(i).getString("modifiedAt");
-                        }
-                    }
+            }
+
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    String equipmentName = jsonObject.getString("equipment_name");
+                    String equipmentCode = jsonObject.getString("equipment_code");
+                    volleyResponseListenerForSingle.onResponse(equipmentName, equipmentCode);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                volleyResponseListenerForSingle.onResponse(equipmentName, equipmentModifiedAt);
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println("DataService Error: " + error);
-                volleyResponseListenerForSingle.onError("" + error);
             }
         });
         // Access the RequestQueue through your singleton class.
-        MySingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
+//        MySingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
     }
 
-    public void getQuestionsByEquipmentId(String id, VolleyResponseListenerForQuestions volleyResponseListenerForQuestions) {
-        String url;
+//    public void getQuestionsByEquipmentId(String id, VolleyResponseListenerForQuestions volleyResponseListenerForQuestions) {
+//        String url;
+//
+//    }
 
+
+    public void getJSONArray(String url, ReturnJsonArray returnJsonArray) {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(GlobalVariable.BASE_URL + url + "/")
+                .method("GET", null)
+                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()){
+                    try {
+                        jsonArray = new JSONArray(response.body().string());
+                        response.close();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    returnJsonArray.onResponse(jsonArray);
+                } else {
+                    System.out.println("getJSONArray failed");
+                }
+            }
+        });
     }
+
+    public void temporaryGet(String url, ReturnJsonObject returnJsonObject) {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(GlobalVariable.BASE_URL + url)
+                .method("GET", null)
+                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()){
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        response.close();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    returnJsonObject.onResponse(jsonObject);
+                } else {
+                    System.out.println("jsonObject failed");
+                }
+            }
+        });
+    }
+
 }

@@ -1,16 +1,20 @@
 package com.example.intelligentequipmentinspectionsystem;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +83,7 @@ public class FormFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_form, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -92,7 +97,10 @@ public class FormFragment extends Fragment {
         if (getArguments() != null) {
             FormFragmentArgs args = FormFragmentArgs.fromBundle(getArguments());
 
-            DataService dataService = new DataService(getContext());
+
+
+
+            DataService dataService = new DataService();
             dataService.getRoomById(args.getRoomId(), new DataService.VolleyResponseListenerForSingle() {
                 @Override
                 public void onError(String message) {
@@ -101,7 +109,13 @@ public class FormFragment extends Fragment {
 
                 @Override
                 public void onResponse(String data1, String data2) {
-                    roomNameAndLocation.setText(data1 + " (" + data2 + ")");
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            roomNameAndLocation.setText(data1 + " (" + data2 + ")");
+                        }
+                    });
                 }
             });
 
@@ -113,26 +127,32 @@ public class FormFragment extends Fragment {
 
                 @Override
                 public void onResponse(String data1, String data2) {
-                    //TODO: Update when there's code
-                    equipmentNameAndCode.setText(data1 + " (No Code Yet)");
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            equipmentNameAndCode.setText(data1 + " (" + data2 + ")");
+                            //TODO remove this
+                            formName.setText(data1 + " Form");
+                        }
+                    });
+
                 }
             });
 
             inspector.setText(getUsername());
 //            dataService.getQuestionsByEquipmentId(args.getEquipmentId, new DataService.)
             List<String> listOfQuestionTitles = new ArrayList<>();
-            listOfQuestionTitles.add("How is the handle");
-            listOfQuestionTitles.add("How is the door frame");
-            listOfQuestionTitles.add("Q3");
-            listOfQuestionTitles.add("Q4");
-            listOfQuestionTitles.add("Q5");
-            listOfQuestionTitles.add("Q6");
-            listOfQuestionTitles.add("Q7");
-            listOfQuestionTitles.add("Q8");
-            listOfQuestionTitles.add("Q9");
-            listOfQuestionTitles.add("Q10");
-            listOfQuestionTitles.add("Q11");
-            listOfQuestionTitles.add("Q12");
+            listOfQuestionTitles.add("How is the handrail?");
+            listOfQuestionTitles.add("How is the heart rate sensor grip?");
+            listOfQuestionTitles.add("How is the emergency stop?");
+            listOfQuestionTitles.add("How is the display screen?");
+            listOfQuestionTitles.add("How are the touch controls?");
+            listOfQuestionTitles.add("How is the belt?");
+            listOfQuestionTitles.add("How is the running deck?");
+            listOfQuestionTitles.add("How is the motor?");
+            listOfQuestionTitles.add("How is the cushioning system?");
+            listOfQuestionTitles.add("How is it's overall condition?");
 
             List<String> listOfQuestionId = new ArrayList<>();
             listOfQuestionId.add("1");
@@ -145,8 +165,6 @@ public class FormFragment extends Fragment {
             listOfQuestionId.add("8");
             listOfQuestionId.add("9");
             listOfQuestionId.add("10");
-            listOfQuestionId.add("11");
-            listOfQuestionId.add("12");
 
             FormAdapter formAdapter = new FormAdapter(getContext(), listOfQuestionTitles, listOfQuestionId);
             recyclerView.setAdapter(formAdapter);
@@ -155,14 +173,17 @@ public class FormFragment extends Fragment {
             sendForm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(formAdapter.validation()) {
+                    if(formAdapter.validation() == "pass") {
                         Toast toast = Toast.makeText(getContext(), "Form Sent", Toast.LENGTH_SHORT);
                         toast.show();
                         NavController navController = Navigation.findNavController(view);
                         navController.navigateUp();
-                    } else {
-                        Toast toast = Toast.makeText(getContext(), "Please Fill All Questions and Problems", Toast.LENGTH_SHORT);
+                    } else if (formAdapter.validation() == "missing"){
+                        Toast toast = Toast.makeText(getContext(), "Please Fill All Questions", Toast.LENGTH_SHORT);
                         toast.show();
+                    } else if (formAdapter.validation() == "pic") {
+                        NavController navController = Navigation.findNavController(view);
+                        navController.navigate(R.id.action_formFragment_to_cameraFragment);
                     }
                 }
             });

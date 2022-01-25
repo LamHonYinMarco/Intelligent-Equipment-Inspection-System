@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,7 +80,7 @@ public class SettingsFragment extends Fragment {
         logoutRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                removeUsername();
+                clearData();
                 Intent i = new Intent(getContext(), MainActivity.class);
                 startActivity(i);
             }
@@ -94,8 +93,10 @@ public class SettingsFragment extends Fragment {
         return username;
     }
 
-    private void removeUsername() {
+    private void clearData() {
         SharedPreferences preferences = getContext().getSharedPreferences("UsernamePref", 0);
         preferences.edit().remove("username").commit();
+        SharedPreferences preferences2 = getContext().getSharedPreferences("TokenPref", 0);
+        preferences2.edit().clear().commit();
     }
 }

@@ -10,9 +10,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +83,7 @@ public class EquipmentFragment extends Fragment {
         if (getArguments() != null) {
             EquipmentFragmentArgs args = EquipmentFragmentArgs.fromBundle(getArguments());
 
-            DataService dataService = new DataService(getContext());
+            DataService dataService = new DataService();
             dataService.getEquipmentsByRoomId(args.getRoomId(), new DataService.VolleyResponseListenerForList() {
                 @Override
                 public void onError(String message) {
@@ -89,15 +92,15 @@ public class EquipmentFragment extends Fragment {
 
                 @Override
                 public void onResponse(List<String> data1, List<String> data2, List<String> roomId) {
-
-                    List<String> formatDate = new ArrayList<>();
-                    data2.forEach(str -> {
-                        formatDate.add("Last Modified: "+str.substring(0,10));
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            EquipmentAdapter equipmentAdapter = new EquipmentAdapter(getContext(), data1, data2, roomId, args.getRoomId());
+                            recyclerView.setAdapter(equipmentAdapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        }
                     });
-
-                    EquipmentAdapter equipmentAdapter = new EquipmentAdapter(getContext(), data1, formatDate, roomId, args.getRoomId());
-                    recyclerView.setAdapter(equipmentAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 }
             });
         }

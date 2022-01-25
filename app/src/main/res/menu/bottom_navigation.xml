@@ -10,10 +10,10 @@
         android:icon="@drawable/ic_baseline_camera_alt_24"
         android:title="Camera" />
 
-    <item
-        android:id="@+id/historyFragment"
-        android:icon="@drawable/ic_baseline_history_24"
-        android:title="History" />
+<!--    <item-->
+<!--        android:id="@+id/historyFragment"-->
+<!--        android:icon="@drawable/ic_baseline_history_24"-->
+<!--        android:title="History" />-->
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_baseline_manage_accounts_24"

@@ -2,6 +2,7 @@ package com.example.intelligentequipmentinspectionsystem;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -14,23 +15,29 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     private Context context;
     private List<String> questionTitles;
     private List<String> questionIds;
-    private List<String> toDoList;
+//    private List<String> toDoList;
+    HashMap<String, String> toDoList = new HashMap<>();
 //    private boolean warningMode = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public FormAdapter(Context context, List<String> questionTitles, List<String> questionIds) {
         this.context = context;
         this.questionTitles = questionTitles;
         this.questionIds = questionIds;
-        toDoList = new ArrayList<>(questionIds);
+        questionIds.forEach(questionId -> {
+            toDoList.put(questionId,"");
+        });
     }
 
     @NonNull
@@ -42,12 +49,15 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
         final ViewHolder holder = new ViewHolder(view);
 
         holder.goodOrBad.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 if (i == R.id.bad) {
                     // if bad is selected make sure it isn't removed from toDoList yet
-                    if (!toDoList.contains(questionIds.get(holder.getAdapterPosition()))) {
-                        toDoList.add(questionIds.get(holder.getAdapterPosition()));
+                    if (!toDoList.containsKey(questionIds.get(holder.getAdapterPosition()))) {
+                        toDoList.put(questionIds.get(holder.getAdapterPosition()),"pic");
+                    } else {
+                        toDoList.replace(questionIds.get(holder.getAdapterPosition()),"pic");
                     }
                     // show reason editText
                     holder.reason.setVisibility(View.VISIBLE);
@@ -66,30 +76,30 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
         });
 
         // if user have added something to the reason then it can be removed from the to do list
-        holder.reason.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!editable.toString().equals("")) {
-                    toDoList.remove(questionIds.get(holder.getAdapterPosition()));
-                } else {
-                    if (!toDoList.contains(questionIds.get(holder.getAdapterPosition()))) {
-                        toDoList.add(questionIds.get(holder.getAdapterPosition()));
-                    }
-                }
-                System.out.println("toDoList" + toDoList);
-                System.out.println("questionIds" + questionIds);
-            }
-        });
+//        holder.reason.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                if (!editable.toString().equals("")) {
+//                    toDoList.remove(questionIds.get(holder.getAdapterPosition()));
+//                } else {
+//                    if (!toDoList.containsKey(questionIds.get(holder.getAdapterPosition()))) {
+//                        toDoList.put(questionIds.get(holder.getAdapterPosition()),"pic");
+//                    }
+//                }
+//                System.out.println("toDoList" + toDoList);
+//                System.out.println("questionIds" + questionIds);
+//            }
+//        });
         return holder;
     }
 
@@ -134,8 +144,13 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
         }
     }
 
-    public boolean validation() {
-        return toDoList.isEmpty();
+    public String validation() {
+        if (toDoList.containsValue("")){
+            return "missing";
+        } else if (toDoList.containsValue("pic")){
+            return "pic";
+        }
+        return "pass";
     }
 
 }

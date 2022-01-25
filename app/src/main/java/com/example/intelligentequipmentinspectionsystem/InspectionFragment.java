@@ -8,12 +8,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +78,7 @@ public class InspectionFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.roomRecyclerView);
         searchBar = (EditText) view.findViewById(R.id.roomSearchBar);
 
-        DataService dataService = new DataService(getContext());
+        DataService dataService = new DataService();
         dataService.getRooms(new DataService.VolleyResponseListenerForList() {
             @Override
             public void onError(String message) {
@@ -132,7 +135,14 @@ public class InspectionFragment extends Fragment {
 
     public void setRecyclerView(List<String> data1, List<String> data2, List<String> id) {
         RoomAdapter roomAdapter = new RoomAdapter(getContext(), data1, data2, id);
-        recyclerView.setAdapter(roomAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.setAdapter(roomAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            }
+        });
+
     }
 }

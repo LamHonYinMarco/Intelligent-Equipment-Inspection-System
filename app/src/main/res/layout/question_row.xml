@@ -28,7 +28,7 @@
         <RadioGroup
             android:id="@+id/goodOrBad"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="5"
             android:background="@drawable/form_outline"
             android:gravity="center_horizontal"
@@ -42,7 +42,7 @@
             <RadioButton
                 android:id="@+id/good"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:layout_weight="6"
                 android:gravity="center" />

@@ -56,5 +56,8 @@
         <argument
             android:name="equipmentId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_formFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
     </fragment>
 </navigation>
