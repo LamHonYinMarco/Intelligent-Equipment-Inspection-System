@@ -2,26 +2,26 @@ package com.example.intelligentequipmentinspectionsystem;
 import java.util.List;
 
 public class Question {
-    private int questionId;
+    private String questionId;
     private String questionTitle;
-    private boolean goodOrBad;
+    private String goodOrBad = "null";
     private String reason;
 
     public Question() {
     }
 
-    public Question(int questionId, String questionTitle, boolean goodOrBad, String reason) {
+    public Question(String questionId, String questionTitle, String goodOrBad, String reason) {
         this.questionId = questionId;
         this.questionTitle = questionTitle;
         this.goodOrBad = goodOrBad;
         this.reason = reason;
     }
 
-    public int getQuestionId() {
+    public String getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(String questionId) {
         this.questionId = questionId;
     }
 
@@ -33,11 +33,11 @@ public class Question {
         this.questionTitle = questionTitle;
     }
 
-    public boolean isGoodOrBad() {
+    public String getGoodOrBad() {
         return goodOrBad;
     }
 
-    public void setGoodOrBad(boolean goodOrBad) {
+    public void setGoodOrBad(String goodOrBad) {
         this.goodOrBad = goodOrBad;
     }
 

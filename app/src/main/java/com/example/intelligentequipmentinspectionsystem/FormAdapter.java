@@ -24,20 +24,17 @@ import java.util.List;
 
 public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     private Context context;
-    private List<String> questionTitles;
-    private List<String> questionIds;
+    private List<Question> questions;
+//    private List<String> questionTitles;
+//    private List<String> questionIds;
 //    private List<String> toDoList;
-    HashMap<String, String> toDoList = new HashMap<>();
+//    HashMap<String, String> toDoList = new HashMap<>();
 //    private boolean warningMode = false;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public FormAdapter(Context context, List<String> questionTitles, List<String> questionIds) {
+
+    public FormAdapter(Context context, List<Question> questions) {
         this.context = context;
-        this.questionTitles = questionTitles;
-        this.questionIds = questionIds;
-        questionIds.forEach(questionId -> {
-            toDoList.put(questionId,"");
-        });
+        this.questions = questions;
     }
 
     @NonNull
@@ -53,59 +50,43 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 if (i == R.id.bad) {
-                    // if bad is selected make sure it isn't removed from toDoList yet
-                    if (!toDoList.containsKey(questionIds.get(holder.getAdapterPosition()))) {
-                        toDoList.put(questionIds.get(holder.getAdapterPosition()),"pic");
-                    } else {
-                        toDoList.replace(questionIds.get(holder.getAdapterPosition()),"pic");
-                    }
+                    // selected bad, show reason editText
+                    questions.get(holder.getAdapterPosition()).setGoodOrBad("bad");
                     // show reason editText
                     holder.reason.setVisibility(View.VISIBLE);
                 } else {
-                    // if selected good remove that question from toDoList
+                    // selected good, remove reason for bad
                     holder.reason.setVisibility(View.GONE);
-                    try {
-                        toDoList.remove(questionIds.get(holder.getAdapterPosition()));
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
+                    questions.get(holder.getAdapterPosition()).setGoodOrBad("good");
+                    questions.get(holder.getAdapterPosition()).setReason("");
                 }
-                System.out.println("toDoList" + toDoList);
-                System.out.println("questionIds" + questionIds);
             }
         });
 
-        // if user have added something to the reason then it can be removed from the to do list
-//        holder.reason.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                if (!editable.toString().equals("")) {
-//                    toDoList.remove(questionIds.get(holder.getAdapterPosition()));
-//                } else {
-//                    if (!toDoList.containsKey(questionIds.get(holder.getAdapterPosition()))) {
-//                        toDoList.put(questionIds.get(holder.getAdapterPosition()),"pic");
-//                    }
-//                }
-//                System.out.println("toDoList" + toDoList);
-//                System.out.println("questionIds" + questionIds);
-//            }
-//        });
+        // record the reason
+        holder.reason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                questions.get(holder.getAdapterPosition()).setReason(editable.toString());
+                System.out.println("Reason: " + questions.get(holder.getAdapterPosition()).getReason());
+            }
+        });
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.questionTitleTV.setText(questionTitles.get(position));
+        holder.questionTitleTV.setText(questions.get(position).getQuestionTitle());
 //        if(warningMode){
 //            System.out.println("it ran");
 //            if(questionIds.get(holder.getAdapterPosition()).contains(toDoList.toString())){
@@ -121,7 +102,7 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return questionTitles.size();
+        return questions.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -144,13 +125,22 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public String validation() {
-        if (toDoList.containsValue("")){
-            return "missing";
-        } else if (toDoList.containsValue("pic")){
-            return "pic";
+        for (int i=0; i<questions.size() ; i++){
+            if(questions.get(i).getGoodOrBad()=="null"){
+                System.out.println("Validation: Missing");
+                return "missing";
+            }
         }
+        for (int i=0; i<questions.size() ; i++){
+            if(questions.get(i).getGoodOrBad()=="bad"){
+                System.out.println("Validation: bad");
+                return "pic";
+            }
+        }
+        System.out.println("Validation: pass");
         return "pass";
-    }
 
+    }
 }

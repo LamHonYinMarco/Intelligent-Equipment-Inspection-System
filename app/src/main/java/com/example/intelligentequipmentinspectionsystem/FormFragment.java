@@ -154,6 +154,7 @@ public class FormFragment extends Fragment {
 
             // TODO make it soft
 //            dataService.getQuestionsByEquipmentId(args.getEquipmentId, new DataService.)
+
             List<String> listOfQuestionTitles = new ArrayList<>();
             listOfQuestionTitles.add("How is the handrail?");
             listOfQuestionTitles.add("How is the heart rate sensor grip?");
@@ -178,8 +179,16 @@ public class FormFragment extends Fragment {
             listOfQuestionId.add("9");
             listOfQuestionId.add("10");
 
+            List<Question> questions = new ArrayList<>();
+            for (int i=0; i < listOfQuestionId.size(); i++){
+                Question question = new Question();
+                question.setQuestionId(listOfQuestionId.get(i));
+                question.setQuestionTitle(listOfQuestionTitles.get(i));
+                questions.add(question);
+            }
+
             // show the list of questions
-            FormAdapter formAdapter = new FormAdapter(getContext(), listOfQuestionTitles, listOfQuestionId);
+            FormAdapter formAdapter = new FormAdapter(getContext(), questions);
             recyclerView.setAdapter(formAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -188,18 +197,15 @@ public class FormFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     if (formAdapter.validation() == "pass") {
-//                        Toast toast = Toast.makeText(getContext(), "Form Sent", Toast.LENGTH_SHORT);
-//                        toast.show();
+                        // all good
                         Navigation.findNavController(view).navigate(R.id.formPart2Fragment, bundle);
-//                        NavController navController = Navigation.findNavController(view);
-//                        navController.navigateUp();
                     } else if (formAdapter.validation() == "missing") {
+                        // one of them is missing
                         Toast toast = Toast.makeText(getContext(), "Please Fill All Questions", Toast.LENGTH_SHORT);
                         toast.show();
                     } else if (formAdapter.validation() == "pic") {
+                        // one of them is bad
                         Navigation.findNavController(view).navigate(R.id.formPart2Fragment, bundle);
-//                        NavController navController = Navigation.findNavController(view);
-//                        navController.navigate(R.id.action_formFragment_to_cameraFragment);
                     }
                 }
             });
