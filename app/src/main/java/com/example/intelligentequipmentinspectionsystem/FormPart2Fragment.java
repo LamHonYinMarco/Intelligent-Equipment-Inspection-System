@@ -6,6 +6,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -30,7 +33,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.gkemon.XMLtoPDF.PdfGenerator;
+import com.gkemon.XMLtoPDF.PdfGeneratorListener;
+import com.gkemon.XMLtoPDF.model.FailureResponse;
+import com.gkemon.XMLtoPDF.model.SuccessResponse;
+
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -154,6 +164,8 @@ public class FormPart2Fragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("roomId", args.getRoomId());
 
+                    generatePDF();
+
                     // navigate to equipmentFragment
                     Navigation.findNavController(view).navigate(R.id.equipmentFragment, bundle);
                 }
@@ -175,5 +187,137 @@ public class FormPart2Fragment extends Fragment {
             e.printStackTrace();
         }
     }
+//    the canvas way
+//    private void generatePDF() {
+//        // declaring width and height for the PDF file.
+//        int pageHeight = 1188;
+//        int pageWidth = 842;
+//
+//        // creating an object variable for the PDF document.
+//        PdfDocument pdfDocument = new PdfDocument();
+//
+//
+//        Paint paint = new Paint();
+//        Paint title = new Paint();
+//
+//        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create();
+//
+//        // setting start page for the PDF file.
+//        PdfDocument.Page myPage = pdfDocument.startPage(myPageInfo);
+//
+//        // creating a variable for canvas from the page of PDF.
+//        Canvas canvas = myPage.getCanvas();
+//
+//        // below line is used to draw our image on our PDF file.
+//        // the first parameter of our drawbitmap method is
+//        // our bitmap
+//        // second parameter is position from left
+//        // third parameter is position from top and last
+//        // one is our variable for paint.
+//        canvas.drawBitmap(signatureView.getImage(), 56, 40, paint);
+//
+//        // below line is used for adding typeface for
+//        // our text which we will be adding in our PDF file.
+//        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+//
+//        // below line is used for setting text size
+//        // which we will be displaying in our PDF file.
+//        title.setTextSize(15);
+//
+//        // below line is sued for setting color
+//        // of our text inside our PDF file.
+//        title.setColor(ContextCompat.getColor(getContext(), R.color.purple_200));
+//
+//        // below line is used to draw text in our PDF file.
+//        // the first parameter is our text, second parameter
+//        // is position from start, third parameter is position from top
+//        // and then we are passing our variable of paint which is title.
+//        canvas.drawText("A portal for IT professionals.", 209, 100, title);
+//        canvas.drawText("Geeks for Geeks", 209, 80, title);
+//
+//        // similarly we are creating another text and in this
+//        // we are aligning this text to center of our PDF file.
+//        title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+//        title.setColor(ContextCompat.getColor(this, R.color.purple_200));
+//        title.setTextSize(15);
+//
+//        // below line is used for setting
+//        // our text to center of PDF.
+//        title.setTextAlign(Paint.Align.CENTER);
+//        canvas.drawText("This is sample document which we have created.", 396, 560, title);
+//
+//        // after adding all attributes to our
+//        // PDF file we will be finishing our page.
+//        pdfDocument.finishPage(myPage);
+//
+//        // below line is used to set the name of
+//        // our PDF file and its path.
+//        File file = new File(Environment.getExternalStorageDirectory(), "Test.pdf");
+//
+//        try {
+//            // after creating a file name we will
+//            // write our PDF file to that location.
+//            pdfDocument.writeTo(new FileOutputStream(file));
+//
+//            // below line is to print toast message
+//            // on completion of PDF generation.
+//            Toast.makeText(getContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            // below line is used
+//            // to handle error
+//            e.printStackTrace();
+//        }
+//        // after storing our pdf to that
+//        // location we are closing our PDF file.
+//        pdfDocument.close();
+//    }
+        private void generatePDF() {
+        System.out.println("generatePDF");
+            PdfGenerator.getBuilder()
+                    .setContext(getContext())
+                    .fromLayoutXMLSource()
+                    .fromLayoutXML(R.layout.fragment_form_part2,R.layout.fragment_form_part2)
+                    /* "fromLayoutXML()" takes array of layout resources.
+                     * You can also invoke "fromLayoutXMLList()" method here which takes list of layout resources instead of array. */
+                    .setFileName("Test-PDF")
+                    /* It is file name */
+                    .setFolderName("FolderA/FolderB/FolderC")
+                    /* It is folder name. If you set the folder name like this pattern (FolderA/FolderB/FolderC), then
+                     * FolderA creates first.Then FolderB inside FolderB and also FolderC inside the FolderB and finally
+                     * the pdf file named "Test-PDF.pdf" will be store inside the FolderB. */
+                    .openPDFafterGeneration(true)
+                    /* It true then the generated pdf will be shown after generated. */
+                    .build(new PdfGeneratorListener() {
+                        @Override
+                        public void onFailure(FailureResponse failureResponse) {
+                            super.onFailure(failureResponse);
+                            System.out.println("It failed: " + failureResponse.getErrorMessage());
+                            /* If pdf is not generated by an error then you will findout the reason behind it
+                             * from this FailureResponse. */
+                        }
+                        @Override
+                        public void onStartPDFGeneration() {
+                            /*When PDF generation begins to start*/
+                        }
 
+                        @Override
+                        public void onFinishPDFGeneration() {
+                            /*When PDF generation is finished*/
+                        }
+
+                        @Override
+                        public void showLog(String log) {
+                            super.showLog(log);
+                            /*It shows logs of events inside the pdf generation process*/
+                        }
+
+                        @Override
+                        public void onSuccess(SuccessResponse response) {
+                            super.onSuccess(response);
+                            /* If PDF is generated successfully then you will find SuccessResponse
+                             * which holds the PdfDocument,File and path (where generated pdf is stored)*/
+
+                        }
+                    });
+        }
 }
