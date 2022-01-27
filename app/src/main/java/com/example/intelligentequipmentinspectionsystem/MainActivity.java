@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        GlobalVariable.backPressed = true;
         NavController navController = Navigation.findNavController(this,R.id.nav_host_fragment);
         return navController.navigateUp();
     }
@@ -65,4 +66,12 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(ev);
     }
+
+    @Override
+    public void onBackPressed() {
+        GlobalVariable.backPressed = true;
+        super.onBackPressed();
+    }
+
+
 }

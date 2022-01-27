@@ -188,7 +188,12 @@ public class FormFragment extends Fragment {
             }
 
             // show the list of questions
-            FormAdapter formAdapter = new FormAdapter(getContext(), questions);
+            FormAdapter formAdapter;
+            if (GlobalVariable.backPressed){
+                formAdapter = new FormAdapter(getContext(), GlobalVariable.globalQuestions);
+            } else {
+                formAdapter = new FormAdapter(getContext(), questions);
+            }
             recyclerView.setAdapter(formAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -198,6 +203,7 @@ public class FormFragment extends Fragment {
                 public void onClick(View view) {
                     if (formAdapter.validation() == "pass") {
                         // all good
+                        GlobalVariable.backPressed = false;
                         Navigation.findNavController(view).navigate(R.id.formPart2Fragment, bundle);
                     } else if (formAdapter.validation() == "missing") {
                         // one of them is missing
@@ -205,6 +211,7 @@ public class FormFragment extends Fragment {
                         toast.show();
                     } else if (formAdapter.validation() == "pic") {
                         // one of them is bad
+                        GlobalVariable.backPressed = false;
                         Navigation.findNavController(view).navigate(R.id.formPart2Fragment, bundle);
                     }
                 }

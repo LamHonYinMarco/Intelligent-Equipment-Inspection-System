@@ -43,11 +43,10 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.View
                 NavController navController = Navigation.findNavController(view);
                 System.out.println("equipmentIds: " +equipmentIds);
                 System.out.println("holder.getAdapterPosition(): " + holder.getAdapterPosition());
-//                EquipmentFragmentDirections.ActionEquipmentFragmentToFormFragment action = EquipmentFragmentDirections.actionEquipmentFragmentToFormFragment(roomId,equipmentIds.get(holder.getAdapterPosition()));
-//                navController.navigate(action);
                 Bundle bundle = new Bundle();
                 bundle.putString("roomId", roomId);
                 bundle.putString("equipmentId", equipmentIds.get(holder.getAdapterPosition()));
+                GlobalVariable.backPressed = false;
                 Navigation.findNavController(view).navigate(R.id.formFragment, bundle);
             }
         });

@@ -87,6 +87,12 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.questionTitleTV.setText(questions.get(position).getQuestionTitle());
+        if (questions.get(position).getGoodOrBad() == "good"){
+            holder.good.setChecked(true);
+        } else if(questions.get(position).getGoodOrBad() == "bad"){
+            holder.bad.setChecked(true);
+        }
+        holder.reason.setText(questions.get(position).getReason());
 //        if(warningMode){
 //            System.out.println("it ran");
 //            if(questionIds.get(holder.getAdapterPosition()).contains(toDoList.toString())){
@@ -136,10 +142,12 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
         for (int i=0; i<questions.size() ; i++){
             if(questions.get(i).getGoodOrBad()=="bad"){
                 System.out.println("Validation: bad");
+                GlobalVariable.globalQuestions = questions;
                 return "pic";
             }
         }
         System.out.println("Validation: pass");
+        GlobalVariable.globalQuestions = questions;
         return "pass";
 
     }
