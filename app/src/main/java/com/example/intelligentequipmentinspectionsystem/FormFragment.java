@@ -1,6 +1,7 @@
 package com.example.intelligentequipmentinspectionsystem;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -8,13 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +36,7 @@ import java.util.List;
 public class FormFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView formName, equipmentNameAndCode, roomNameAndLocation, inspector;
-    private Button sendForm;
+    private Button nextPart;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -92,15 +95,20 @@ public class FormFragment extends Fragment {
         equipmentNameAndCode = (TextView) view.findViewById(R.id.equipmentNameAndCode);
         roomNameAndLocation = (TextView) view.findViewById(R.id.roomNameAndLocation);
         inspector = (TextView) view.findViewById(R.id.inspector);
-        sendForm = (Button) view.findViewById(R.id.sendForm);
+        nextPart = (Button) view.findViewById(R.id.nextPart);
 
         if (getArguments() != null) {
+            // get data from last fragment
             FormFragmentArgs args = FormFragmentArgs.fromBundle(getArguments());
 
+            // prepare bundle for next fragment
+            Bundle bundle = new Bundle();
+            bundle.putString("roomId", args.getRoomId());
 
-
-
+            // open dataService to start getting data
             DataService dataService = new DataService();
+
+            // get room id by id
             dataService.getRoomById(args.getRoomId(), new DataService.VolleyResponseListenerForSingle() {
                 @Override
                 public void onError(String message) {
@@ -119,6 +127,7 @@ public class FormFragment extends Fragment {
                 }
             });
 
+            // get equipment by id
             dataService.getEquipmentById(args.getEquipmentId(), new DataService.VolleyResponseListenerForSingle() {
                 @Override
                 public void onError(String message) {
@@ -140,7 +149,10 @@ public class FormFragment extends Fragment {
                 }
             });
 
+            // set the inspector name to login name
             inspector.setText(getUsername());
+
+            // TODO make it soft
 //            dataService.getQuestionsByEquipmentId(args.getEquipmentId, new DataService.)
             List<String> listOfQuestionTitles = new ArrayList<>();
             listOfQuestionTitles.add("How is the handrail?");
@@ -166,24 +178,28 @@ public class FormFragment extends Fragment {
             listOfQuestionId.add("9");
             listOfQuestionId.add("10");
 
+            // show the list of questions
             FormAdapter formAdapter = new FormAdapter(getContext(), listOfQuestionTitles, listOfQuestionId);
             recyclerView.setAdapter(formAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            sendForm.setOnClickListener(new View.OnClickListener() {
+            // the "next" button for moving to part 2
+            nextPart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(formAdapter.validation() == "pass") {
-                        Toast toast = Toast.makeText(getContext(), "Form Sent", Toast.LENGTH_SHORT);
-                        toast.show();
-                        NavController navController = Navigation.findNavController(view);
-                        navController.navigateUp();
-                    } else if (formAdapter.validation() == "missing"){
+                    if (formAdapter.validation() == "pass") {
+//                        Toast toast = Toast.makeText(getContext(), "Form Sent", Toast.LENGTH_SHORT);
+//                        toast.show();
+                        Navigation.findNavController(view).navigate(R.id.formPart2Fragment, bundle);
+//                        NavController navController = Navigation.findNavController(view);
+//                        navController.navigateUp();
+                    } else if (formAdapter.validation() == "missing") {
                         Toast toast = Toast.makeText(getContext(), "Please Fill All Questions", Toast.LENGTH_SHORT);
                         toast.show();
                     } else if (formAdapter.validation() == "pic") {
-                        NavController navController = Navigation.findNavController(view);
-                        navController.navigate(R.id.action_formFragment_to_cameraFragment);
+                        Navigation.findNavController(view).navigate(R.id.formPart2Fragment, bundle);
+//                        NavController navController = Navigation.findNavController(view);
+//                        navController.navigate(R.id.action_formFragment_to_cameraFragment);
                     }
                 }
             });
@@ -195,4 +211,6 @@ public class FormFragment extends Fragment {
         String username = sharedPreferences.getString("username", "");
         return username;
     }
+
+
 }

@@ -138,6 +138,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -145,15 +147,16 @@
                 android:id="@+id/formRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+
                 android:background="@drawable/form_outline" />
 
+
             <Button
-                android:id="@+id/sendForm"
+                android:id="@+id/nextPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SEND" />
+                android:text="NEXT" />
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

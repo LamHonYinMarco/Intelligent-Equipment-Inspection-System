@@ -1,6 +1,7 @@
 package com.example.intelligentequipmentinspectionsystem;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +43,12 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.View
                 NavController navController = Navigation.findNavController(view);
                 System.out.println("equipmentIds: " +equipmentIds);
                 System.out.println("holder.getAdapterPosition(): " + holder.getAdapterPosition());
-                EquipmentFragmentDirections.ActionEquipmentFragmentToFormFragment action = EquipmentFragmentDirections.actionEquipmentFragmentToFormFragment(roomId,equipmentIds.get(holder.getAdapterPosition()));
-                navController.navigate(action);
+//                EquipmentFragmentDirections.ActionEquipmentFragmentToFormFragment action = EquipmentFragmentDirections.actionEquipmentFragmentToFormFragment(roomId,equipmentIds.get(holder.getAdapterPosition()));
+//                navController.navigate(action);
+                Bundle bundle = new Bundle();
+                bundle.putString("roomId", roomId);
+                bundle.putString("equipmentId", equipmentIds.get(holder.getAdapterPosition()));
+                Navigation.findNavController(view).navigate(R.id.formFragment, bundle);
             }
         });
 
