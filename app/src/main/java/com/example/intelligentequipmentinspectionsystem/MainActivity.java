@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        System.out.println("In main");
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this,R.id.nav_host_fragment);
         return navController.navigateUp();
     }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (getCurrentFocus() != null) {
@@ -65,6 +68,5 @@ public class MainActivity extends AppCompatActivity {
         GlobalVariable.backPressed = true;
         super.onBackPressed();
     }
-
 
 }

@@ -42,15 +42,17 @@ public class Login extends AppCompatActivity {
     String refreshToken = "";
     String accessToken = "";
     JSONObject json;
-    AccessTokenRepository accessTokenRepository = new AccessTokenRepository();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("In login" + getRefreshToken());
         if (getRefreshToken() != ""){
+            System.out.println("Already have token");
             GlobalVariable.refreshToken = getRefreshToken();
             GlobalVariable.accessToken = getAccessToken();
             Intent i = new Intent(Login.this, MainActivity.class);
             startActivity(i);
+            Login.this.finish();
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);

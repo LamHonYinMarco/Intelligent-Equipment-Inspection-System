@@ -185,7 +185,7 @@ public class DataService {
         Request request = new Request.Builder()
                 .url(GlobalVariable.BASE_URL + url + "/")
                 .method("GET", null)
-                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
+//                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -220,7 +220,7 @@ public class DataService {
         Request request = new Request.Builder()
                 .url(GlobalVariable.BASE_URL + url)
                 .method("GET", null)
-                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
+//                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override

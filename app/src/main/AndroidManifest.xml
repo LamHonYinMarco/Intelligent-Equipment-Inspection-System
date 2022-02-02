@@ -18,7 +18,8 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity android:name=".Login"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

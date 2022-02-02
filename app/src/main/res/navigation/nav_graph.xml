@@ -63,7 +63,7 @@
         tools:layout="@layout/fragment_form_part2" >
         <action
             android:id="@+id/action_formPart2Fragment_to_equipmentFragment"
-            app:destination="@id/equipmentFragment" />
+            app:destination="@id/equipmentFragment"/>
         <argument
             android:name="roomId"
             app:argType="string" />

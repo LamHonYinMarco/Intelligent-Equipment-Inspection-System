@@ -9,7 +9,7 @@ import okhttp3.Response;
 import okhttp3.Route;
 
 public class AccessTokenAuthenticator implements Authenticator {
-    private AccessTokenRepository accountRepository;
+    private AccessTokenRepository accountRepository = new AccessTokenRepository();
 
     public AccessTokenAuthenticator() {
     }

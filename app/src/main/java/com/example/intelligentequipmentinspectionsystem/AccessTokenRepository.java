@@ -102,21 +102,17 @@ public class AccessTokenRepository {
         RequestBody body = RequestBody.create(mediaType, "{\r\n    \"refresh\": \"" + refreshToken + "\"\r\n}");
         ;
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:8000/api/refresh/")
+                .url(GlobalVariable.BASE_URL +"refresh/")
                 .method("POST", body)
-                .addHeader("refresh", refreshToken)
-                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
                 .addHeader("Content-Type", "application/json")
                 .build();
         try {
             Response response = client.newCall(request).execute();
-            // Turn the response into a JSONArray
-            JSONArray array = new JSONArray(response.body().string());
-            // Turn the JSONArray into a JSONObject
-            JSONObject object = array.getJSONObject(0);
+            JSONObject object = new JSONObject(response.body().string());
             // Get value from that JSONObject
             accessToken = object.getString("access");
         } catch (IOException | JSONException ioException) {
+            System.out.println("Refresh Fail: ");
             System.out.println(ioException);
         }
         GlobalVariable.accessToken = accessToken;
