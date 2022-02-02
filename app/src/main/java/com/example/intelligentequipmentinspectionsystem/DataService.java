@@ -174,8 +174,14 @@ public class DataService {
 
 
     public void getJSONArray(String url, ReturnJsonArray returnJsonArray) {
-        OkHttpClient client = new OkHttpClient().newBuilder()
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient client = okHttpClient.newBuilder()
+                .authenticator(new AccessTokenAuthenticator())
+                .addInterceptor(new AccessTokenInterceptor())
                 .build();
+//        OkHttpClient client = new OkHttpClient().newBuilder()
+//                .build();
         Request request = new Request.Builder()
                 .url(GlobalVariable.BASE_URL + url + "/")
                 .method("GET", null)
@@ -192,8 +198,6 @@ public class DataService {
                 if (response.isSuccessful()){
                     try {
                         jsonArray = new JSONArray(response.body().string());
-                        response.close();
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -206,8 +210,13 @@ public class DataService {
     }
 
     public void temporaryGet(String url, ReturnJsonObject returnJsonObject) {
-        OkHttpClient client = new OkHttpClient().newBuilder()
+        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient client = okHttpClient.newBuilder()
+                .authenticator(new AccessTokenAuthenticator())
+                .addInterceptor(new AccessTokenInterceptor())
                 .build();
+//        OkHttpClient client = new OkHttpClient().newBuilder()
+//                .build();
         Request request = new Request.Builder()
                 .url(GlobalVariable.BASE_URL + url)
                 .method("GET", null)
@@ -224,8 +233,6 @@ public class DataService {
                 if (response.isSuccessful()){
                     try {
                         jsonObject = new JSONObject(response.body().string());
-                        response.close();
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

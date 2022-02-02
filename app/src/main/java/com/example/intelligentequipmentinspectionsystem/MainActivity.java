@@ -23,13 +23,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (getRefreshToken() == ""){
-            Intent i = new Intent(MainActivity.this, Login.class);
-            startActivity(i);
-        } else if (GlobalVariable.refreshToken == ""){
-            GlobalVariable.refreshToken = getRefreshToken();
-            GlobalVariable.accessToken = getAccessToken();
-        }
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(

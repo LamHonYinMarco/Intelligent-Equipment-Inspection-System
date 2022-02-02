@@ -6,12 +6,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,8 +22,10 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -32,10 +34,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.internal.http2.Header;
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class Login extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -44,9 +42,16 @@ public class Login extends AppCompatActivity {
     String refreshToken = "";
     String accessToken = "";
     JSONObject json;
+    AccessTokenRepository accessTokenRepository = new AccessTokenRepository();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (getRefreshToken() != ""){
+            GlobalVariable.refreshToken = getRefreshToken();
+            GlobalVariable.accessToken = getAccessToken();
+            Intent i = new Intent(Login.this, MainActivity.class);
+            startActivity(i);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -60,17 +65,14 @@ public class Login extends AppCompatActivity {
         }
 
 
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-
                 if (username.getText().toString().equals("") || password.getText().toString().equals("")) {
                     Toast toast = Toast.makeText(Login.this, "Please Enter Username and Password", Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
-
                     OkHttpClient client = new OkHttpClient().newBuilder()
                             .build();
                     MediaType mediaType = MediaType.parse("application/json");
@@ -93,7 +95,6 @@ public class Login extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 try {
                                     json = new JSONObject(response.body().string());
-                                    response.close();
                                     System.out.println("refreshToken: " + json.get("refresh") + "\naccessToken: " + json.get("access"));
                                     refreshToken = json.get("refresh").toString();
                                     accessToken = json.get("access").toString();
@@ -101,7 +102,9 @@ public class Login extends AppCompatActivity {
                                     GlobalVariable.refreshToken = refreshToken;
                                     GlobalVariable.accessToken = accessToken;
                                     saveUsername(username.getText().toString());
-                                    finish();
+//                                    finish();
+                                    Intent i = new Intent(Login.this, MainActivity.class);
+                                    startActivity(i);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -186,5 +189,17 @@ public class Login extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+    }
+
+    private String getRefreshToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("TokenPref", 0);
+        String refreshToken = sharedPreferences.getString("refreshToken", "");
+        return refreshToken;
+    }
+
+    private String getAccessToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("TokenPref", 0);
+        String accessToken = sharedPreferences.getString("accessToken", "");
+        return accessToken;
     }
 }

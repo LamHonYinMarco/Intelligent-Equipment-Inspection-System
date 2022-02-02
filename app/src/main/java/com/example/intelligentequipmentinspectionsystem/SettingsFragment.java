@@ -81,7 +81,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 clearData();
-                Intent i = new Intent(getContext(), MainActivity.class);
+                Intent i = new Intent(getContext(), Login.class);
                 startActivity(i);
             }
         });
