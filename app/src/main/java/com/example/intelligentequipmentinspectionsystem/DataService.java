@@ -101,13 +101,13 @@ public class DataService {
             public void onResponse(JSONArray jsonArray) {
                 try {
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        if (jsonArray.getJSONObject(i).getString("room").equals(id)) {
+                        if (jsonArray.getJSONObject(i).getString("room_id").equals(id)) {
                             equipmentNames.add(jsonArray.getJSONObject(i).getString("equipment_name"));
 
                             // TODO: change to form modifiedAt
                             equipmentCode.add(jsonArray.getJSONObject(i).getString("equipment_code"));
 
-                            equipmentId.add(jsonArray.getJSONObject(i).getString("id"));
+                            equipmentId.add(jsonArray.getJSONObject(i).getString("equipment_id"));
                         }
                     }
                 } catch (JSONException e) {
