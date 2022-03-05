@@ -1,7 +1,6 @@
 package com.example.intelligentequipmentinspectionsystem;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,8 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
@@ -51,14 +48,14 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 if (i == R.id.bad) {
                     // selected bad, show reason editText
-                    questions.get(holder.getAdapterPosition()).setGoodOrBad("bad");
+                    questions.get(holder.getAdapterPosition()).setNormalOrDefective("bad");
                     // show reason editText
                     holder.reason.setVisibility(View.VISIBLE);
                 } else {
                     // selected good, remove reason for bad
                     holder.reason.setVisibility(View.GONE);
-                    questions.get(holder.getAdapterPosition()).setGoodOrBad("good");
-                    questions.get(holder.getAdapterPosition()).setReason("");
+                    questions.get(holder.getAdapterPosition()).setNormalOrDefective("good");
+                    questions.get(holder.getAdapterPosition()).setFollowUpAction("");
                 }
             }
         });
@@ -77,8 +74,8 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                questions.get(holder.getAdapterPosition()).setReason(editable.toString());
-                System.out.println("Reason: " + questions.get(holder.getAdapterPosition()).getReason());
+                questions.get(holder.getAdapterPosition()).setFollowUpAction(editable.toString());
+                System.out.println("Reason: " + questions.get(holder.getAdapterPosition()).getFollowUpAction());
             }
         });
         return holder;
@@ -87,12 +84,12 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.questionTitleTV.setText(questions.get(position).getQuestionTitle());
-        if (questions.get(position).getGoodOrBad() == "good"){
+        if (questions.get(position).getNormalOrDefective() == "good"){
             holder.good.setChecked(true);
-        } else if(questions.get(position).getGoodOrBad() == "bad"){
+        } else if(questions.get(position).getNormalOrDefective() == "bad"){
             holder.bad.setChecked(true);
         }
-        holder.reason.setText(questions.get(position).getReason());
+        holder.reason.setText(questions.get(position).getFollowUpAction());
 //        if(warningMode){
 //            System.out.println("it ran");
 //            if(questionIds.get(holder.getAdapterPosition()).contains(toDoList.toString())){
@@ -134,13 +131,13 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public String validation() {
         for (int i=0; i<questions.size() ; i++){
-            if(questions.get(i).getGoodOrBad()=="null"){
+            if(questions.get(i).getNormalOrDefective()=="null"){
                 System.out.println("Validation: Missing");
                 return "missing";
             }
         }
         for (int i=0; i<questions.size() ; i++){
-            if(questions.get(i).getGoodOrBad()=="bad"){
+            if(questions.get(i).getNormalOrDefective()=="bad"){
                 System.out.println("Validation: bad");
                 GlobalVariable.globalQuestions = questions;
                 return "pic";
@@ -149,6 +146,5 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
         System.out.println("Validation: pass");
         GlobalVariable.globalQuestions = questions;
         return "pass";
-
     }
 }

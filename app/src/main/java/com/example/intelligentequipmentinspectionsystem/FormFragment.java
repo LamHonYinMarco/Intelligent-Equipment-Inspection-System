@@ -1,7 +1,6 @@
 package com.example.intelligentequipmentinspectionsystem;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -13,10 +12,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +21,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +105,7 @@ public class FormFragment extends Fragment {
             DataService dataService = new DataService();
 
             // get room id by id
-            dataService.getRoomById(args.getRoomId(), new DataService.VolleyResponseListenerForSingle() {
+            dataService.getRoomById(args.getRoomId(), new DataService.ResponseListenerForSingle() {
                 @Override
                 public void onError(String message) {
 
@@ -128,7 +124,7 @@ public class FormFragment extends Fragment {
             });
 
             // get equipment by id
-            dataService.getEquipmentById(args.getEquipmentId(), new DataService.VolleyResponseListenerForSingle() {
+            dataService.getEquipmentById(args.getEquipmentId(), new DataService.ResponseListenerForSingle() {
                 @Override
                 public void onError(String message) {
 

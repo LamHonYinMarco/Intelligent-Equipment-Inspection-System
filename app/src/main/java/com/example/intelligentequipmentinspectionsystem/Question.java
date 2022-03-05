@@ -1,20 +1,19 @@
 package com.example.intelligentequipmentinspectionsystem;
-import java.util.List;
 
 public class Question {
     private String questionId;
     private String questionTitle;
-    private String goodOrBad = "null";
-    private String reason;
+    private String normalOrDefective = "null";
+    private String followUpAction;
 
     public Question() {
     }
 
-    public Question(String questionId, String questionTitle, String goodOrBad, String reason) {
+    public Question(String questionId, String questionTitle, String normalOrDefective, String followUpAction) {
         this.questionId = questionId;
         this.questionTitle = questionTitle;
-        this.goodOrBad = goodOrBad;
-        this.reason = reason;
+        this.normalOrDefective = normalOrDefective;
+        this.followUpAction = followUpAction;
     }
 
     public String getQuestionId() {
@@ -33,19 +32,19 @@ public class Question {
         this.questionTitle = questionTitle;
     }
 
-    public String getGoodOrBad() {
-        return goodOrBad;
+    public String getNormalOrDefective() {
+        return normalOrDefective;
     }
 
-    public void setGoodOrBad(String goodOrBad) {
-        this.goodOrBad = goodOrBad;
+    public void setNormalOrDefective(String normalOrDefective) {
+        this.normalOrDefective = normalOrDefective;
     }
 
-    public String getReason() {
-        return reason;
+    public String getFollowUpAction() {
+        return followUpAction;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setFollowUpAction(String followUpAction) {
+        this.followUpAction = followUpAction;
     }
 }

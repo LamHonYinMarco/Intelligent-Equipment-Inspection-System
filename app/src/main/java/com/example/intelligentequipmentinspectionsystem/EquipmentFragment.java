@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +15,6 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,19 +83,26 @@ public class EquipmentFragment extends Fragment {
             EquipmentFragmentArgs args = EquipmentFragmentArgs.fromBundle(getArguments());
 
             DataService dataService = new DataService();
-            dataService.getEquipmentsByRoomId(args.getRoomId(), new DataService.VolleyResponseListenerForList() {
+            dataService.getEquipmentsByRoomId(args.getRoomId(), new DataService.ResponseListenerForList() {
                 @Override
                 public void onError(String message) {
 
                 }
 
                 @Override
-                public void onResponse(List<String> data1, List<String> data2, List<String> roomId) {
+                public void onResponse(List<String> data1, List<String> data2, List<String> equipmentId) {
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            EquipmentAdapter equipmentAdapter = new EquipmentAdapter(getContext(), data1, data2, roomId, args.getRoomId());
+                            List<Question> questions = new ArrayList<>();
+                            for (int i=0; i < data1.size(); i++){
+                                Question question = new Question();
+                                question.setQuestionTitle(data1.get(i));
+                                question.setQuestionId(equipmentId.get(i));
+                                questions.add(question);
+                            }
+                            EquipmentAdapter2 equipmentAdapter = new EquipmentAdapter2(getContext(), questions);
                             recyclerView.setAdapter(equipmentAdapter);
                             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                         }

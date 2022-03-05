@@ -32,29 +32,29 @@ public class DataService {
         void onResponse(JSONObject jsonObject);
     }
 
-    public interface VolleyResponseListenerForList {
+    public interface ResponseListenerForList {
         void onError(String message);
 
         void onResponse(List<String> data1, List<String> data2, List<String> id);
     }
 
-    public interface VolleyResponseListenerForSingle {
+    public interface ResponseListenerForSingle {
         void onError(String message);
 
         void onResponse(String data1, String data2);
     }
 
-    public interface VolleyResponseListenerForQuestions {
+    public interface ResponseListenerForQuestions {
         void onError(String message);
 
         void onResponse(List<String> questionTitles, List<String> questionIds);
     }
 
-    public void getToken(VolleyResponseListenerForSingle volleyResponseListenerForSingle) {
+    public void getToken(ResponseListenerForSingle responseListenerForSingle) {
 
     }
 
-    public void getRooms(VolleyResponseListenerForList volleyResponseListenerForList) {
+    public void getRooms(ResponseListenerForList responseListenerForList) {
 
         List<String> roomNames = new ArrayList<>();
         List<String> roomLocations = new ArrayList<>();
@@ -79,13 +79,13 @@ public class DataService {
                 System.out.println("DataService getRoomName Room Names: " + roomNames);
                 System.out.println("DataService getRoomName Room Locations: " + roomLocations);
                 System.out.println("DataService getRoomName Room IDs: " + roomIds);
-                volleyResponseListenerForList.onResponse(roomNames, roomLocations, roomIds);
+                responseListenerForList.onResponse(roomNames, roomLocations, roomIds);
             }
         });
 
     }
 
-    public void getEquipmentsByRoomId(String id, VolleyResponseListenerForList volleyResponseListenerForList) {
+    public void getEquipmentsByRoomId(String id, ResponseListenerForList responseListenerForList) {
 
         List<String> equipmentNames = new ArrayList<>();
         List<String> equipmentCode = new ArrayList<>();
@@ -116,12 +116,12 @@ public class DataService {
                 System.out.println("DataService Equipment Names: " + equipmentNames);
                 System.out.println("DataService Equipment Code: " + equipmentCode);
                 System.out.println("DataService Equipment ID: " + equipmentId);
-                volleyResponseListenerForList.onResponse(equipmentNames, equipmentCode, equipmentId);
+                responseListenerForList.onResponse(equipmentNames, equipmentCode, equipmentId);
             }
         });
     }
 
-    public void getRoomById(String id, VolleyResponseListenerForSingle volleyResponseListenerForSingle) {
+    public void getRoomById(String id, ResponseListenerForSingle responseListenerForSingle) {
         temporaryGet("room/" + id, new ReturnJsonObject() {
             @Override
             public void onError(String message) {
@@ -132,7 +132,7 @@ public class DataService {
                 try {
                     String roomName = jsonObject.getString("room_name");
                     String roomLocation = jsonObject.getString("location");
-                    volleyResponseListenerForSingle.onResponse(roomName, roomLocation);
+                    responseListenerForSingle.onResponse(roomName, roomLocation);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -144,7 +144,7 @@ public class DataService {
 //        MySingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
     }
 
-    public void getEquipmentById(String id, VolleyResponseListenerForSingle volleyResponseListenerForSingle) {
+    public void getEquipmentById(String id, ResponseListenerForSingle responseListenerForSingle) {
         System.out.println("DataService getEquipment Room ID: " + id);
         temporaryGet("equipment/" + id, new ReturnJsonObject() {
             @Override
@@ -157,7 +157,7 @@ public class DataService {
                 try {
                     String equipmentName = jsonObject.getString("equipment_name");
                     String equipmentCode = jsonObject.getString("equipment_code");
-                    volleyResponseListenerForSingle.onResponse(equipmentName, equipmentCode);
+                    responseListenerForSingle.onResponse(equipmentName, equipmentCode);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
