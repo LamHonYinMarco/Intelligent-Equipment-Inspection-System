@@ -84,8 +84,12 @@ public class CameraFragment extends Fragment {
             public void onActivityResult(ActivityResult result) {
                 if (result.getData() != null){
                     Bundle bundle = result.getData().getExtras();
-                    Bitmap bitmap = (Bitmap) bundle.get("data");
-                    imageView.setImageBitmap(bitmap);
+                    try {
+                        Bitmap bitmap = (Bitmap) bundle.get("data");
+                        imageView.setImageBitmap(bitmap);
+                    } catch (NullPointerException e) {
+                        System.out.println(e);
+                    }
                 }
             }
         });

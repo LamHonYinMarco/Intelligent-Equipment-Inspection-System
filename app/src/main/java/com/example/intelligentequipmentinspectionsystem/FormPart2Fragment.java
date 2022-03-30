@@ -41,6 +41,8 @@ import com.gkemon.XMLtoPDF.PdfGeneratorListener;
 import com.gkemon.XMLtoPDF.model.FailureResponse;
 import com.gkemon.XMLtoPDF.model.SuccessResponse;
 
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -109,8 +111,12 @@ public class FormPart2Fragment extends Fragment {
             public void onActivityResult(ActivityResult result) {
                 if (result.getData() != null) {
                     Bundle bundle = result.getData().getExtras();
-                    Bitmap bitmap = (Bitmap) bundle.get("data");
-                    imageView.setImageBitmap(bitmap);
+                    try {
+                        Bitmap bitmap = (Bitmap) bundle.get("data");
+                        imageView.setImageBitmap(bitmap);
+                    } catch (NullPointerException e) {
+                        System.out.println(e);
+                    }
                 }
             }
         });
@@ -161,16 +167,16 @@ public class FormPart2Fragment extends Fragment {
                     Toast toast = Toast.makeText(getContext(), "Form Sent", Toast.LENGTH_SHORT);
                     toast.show();
                     // get data from last fragment
-                    FormPart2FragmentArgs args = FormPart2FragmentArgs.fromBundle(getArguments());
+//                    FormPart2FragmentArgs args = FormPart2FragmentArgs.fromBundle(getArguments());
 
                     // prepare bundle for next fragment
-                    Bundle bundle = new Bundle();
-                    bundle.putString("roomId", args.getRoomId());
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("roomId", args.getRoomId());
 
 //                    generatePDF();
 
 
-                    // navigate to equipmentFragment
+                    // navigate to inspectionFragment
                     GlobalVariable.backPressed = false;
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
                     navController.navigateUp();

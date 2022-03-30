@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +16,8 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +29,8 @@ import java.util.List;
  */
 public class EquipmentFragment extends Fragment {
     private RecyclerView recyclerView;
-
+    private Button button;
+    private EquipmentAdapter2 equipmentAdapter;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -79,6 +83,7 @@ public class EquipmentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.equipmentRecyclerView);
+        button = (Button) view.findViewById(R.id.toSignPage);
         if (getArguments() != null) {
             EquipmentFragmentArgs args = EquipmentFragmentArgs.fromBundle(getArguments());
 
@@ -102,7 +107,14 @@ public class EquipmentFragment extends Fragment {
                                 question.setQuestionId(equipmentId.get(i));
                                 questions.add(question);
                             }
-                            EquipmentAdapter2 equipmentAdapter = new EquipmentAdapter2(getContext(), questions);
+
+                            if (GlobalVariable.backPressed){
+                                System.out.println("EquipmentFragment back data" + GlobalVariable.globalQuestions);
+                                 equipmentAdapter = new EquipmentAdapter2(getContext(), GlobalVariable.globalQuestions);
+                            } else {
+                                System.out.println("EquipmentFragment data" + questions);
+                                 equipmentAdapter = new EquipmentAdapter2(getContext(), questions);
+                            }
                             recyclerView.setAdapter(equipmentAdapter);
                             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                         }
@@ -110,6 +122,25 @@ public class EquipmentFragment extends Fragment {
                 }
             });
         }
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (equipmentAdapter.validation() == "pass") {
+                    // all good
+                    GlobalVariable.backPressed = false;
+                    Navigation.findNavController(view).navigate(R.id.formPart2Fragment);
+                } else if (equipmentAdapter.validation() == "missing") {
+                    // one of them is missing
+                    Toast toast = Toast.makeText(getContext(), "Please Fill All Questions", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else if (equipmentAdapter.validation() == "defective") {
+                    // one of them is bad
+                    GlobalVariable.backPressed = false;
+                    Navigation.findNavController(view).navigate(R.id.formPart2Fragment);
+                }
+
+            }
+        });
 
     }
 }

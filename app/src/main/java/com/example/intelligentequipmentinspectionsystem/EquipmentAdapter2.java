@@ -108,6 +108,7 @@ public class EquipmentAdapter2 extends RecyclerView.Adapter<EquipmentAdapter2.Vi
             holder.defective.setChecked(true);
         }
         holder.followUpAction.setText(questions.get(position).getFollowUpAction());
+        holder.followUpAction.setVisibility(View.GONE);
     }
 
     @Override

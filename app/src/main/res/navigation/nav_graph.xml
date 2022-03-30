@@ -29,12 +29,12 @@
         android:name="com.example.intelligentequipmentinspectionsystem.EquipmentFragment"
         android:label="Equipment"
         tools:layout="@layout/fragment_equipment" >
-        <action
-            android:id="@+id/action_equipmentFragment_to_formFragment"
-            app:destination="@id/formFragment" />
         <argument
             android:name="roomId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_equipmentFragment_to_formPart2Fragment"
+            app:destination="@id/formPart2Fragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -52,20 +52,17 @@
         <argument
             android:name="equipmentId"
             app:argType="string" />
-        <action
-            android:id="@+id/action_formFragment_to_formPart2Fragment"
-            app:destination="@id/formPart2Fragment" />
     </fragment>
     <fragment
         android:id="@+id/formPart2Fragment"
         android:name="com.example.intelligentequipmentinspectionsystem.FormPart2Fragment"
         android:label="Form"
         tools:layout="@layout/fragment_form_part2" >
-        <action
-            android:id="@+id/action_formPart2Fragment_to_equipmentFragment"
-            app:destination="@id/equipmentFragment"/>
         <argument
             android:name="roomId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_formPart2Fragment_to_inspectionFragment"
+            app:destination="@id/inspectionFragment" />
     </fragment>
 </navigation>
