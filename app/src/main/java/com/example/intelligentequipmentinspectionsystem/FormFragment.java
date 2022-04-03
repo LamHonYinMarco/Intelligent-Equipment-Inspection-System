@@ -148,70 +148,14 @@
 //            // set the inspector name to login name
 //            inspector.setText(getUsername());
 //
-//            // TODO make it soft
-////            dataService.getQuestionsByEquipmentId(args.getEquipmentId, new DataService.)
-//
-//            List<String> listOfQuestionTitles = new ArrayList<>();
-//            listOfQuestionTitles.add("How is the handrail?");
-//            listOfQuestionTitles.add("How is the heart rate sensor grip?");
-//            listOfQuestionTitles.add("How is the emergency stop?");
-//            listOfQuestionTitles.add("How is the display screen?");
-//            listOfQuestionTitles.add("How are the touch controls?");
-//            listOfQuestionTitles.add("How is the belt?");
-//            listOfQuestionTitles.add("How is the running deck?");
-//            listOfQuestionTitles.add("How is the motor?");
-//            listOfQuestionTitles.add("How is the cushioning system?");
-//            listOfQuestionTitles.add("How is it's overall condition?");
-//
-//            List<String> listOfQuestionId = new ArrayList<>();
-//            listOfQuestionId.add("1");
-//            listOfQuestionId.add("2");
-//            listOfQuestionId.add("3");
-//            listOfQuestionId.add("4");
-//            listOfQuestionId.add("5");
-//            listOfQuestionId.add("6");
-//            listOfQuestionId.add("7");
-//            listOfQuestionId.add("8");
-//            listOfQuestionId.add("9");
-//            listOfQuestionId.add("10");
-//
-//            List<Question> questions = new ArrayList<>();
-//            for (int i=0; i < listOfQuestionId.size(); i++){
-//                Question question = new Question();
-//                question.setQuestionId(listOfQuestionId.get(i));
-//                question.setQuestionTitle(listOfQuestionTitles.get(i));
-//                questions.add(question);
-//            }
-//
 //            // show the list of questions
 //            FormAdapter formAdapter;
-//            if (GlobalVariable.backPressed){
 //                formAdapter = new FormAdapter(getContext(), GlobalVariable.globalQuestions);
-//            } else {
-//                formAdapter = new FormAdapter(getContext(), questions);
-//            }
+//
 //            recyclerView.setAdapter(formAdapter);
 //            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 //
-//            // the "next" button for moving to part 2
-//            nextPart.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (formAdapter.validation() == "pass") {
-//                        // all good
-//                        GlobalVariable.backPressed = false;
-//                        Navigation.findNavController(view).navigate(R.id.formPart2Fragment, bundle);
-//                    } else if (formAdapter.validation() == "missing") {
-//                        // one of them is missing
-//                        Toast toast = Toast.makeText(getContext(), "Please Fill All Questions", Toast.LENGTH_SHORT);
-//                        toast.show();
-//                    } else if (formAdapter.validation() == "pic") {
-//                        // one of them is bad
-//                        GlobalVariable.backPressed = false;
-//                        Navigation.findNavController(view).navigate(R.id.formPart2Fragment, bundle);
-//                    }
-//                }
-//            });
+//
 //        }
 //    }
 //

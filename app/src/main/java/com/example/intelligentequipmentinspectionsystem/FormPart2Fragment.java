@@ -1,6 +1,7 @@
 package com.example.intelligentequipmentinspectionsystem;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -144,15 +146,6 @@ public class FormPart2Fragment extends Fragment {
             }
         });
 
-        // signature stuff
-        signatureView = (SignatureView) view.findViewById(R.id.signature);
-        clear = (Button) view.findViewById(R.id.clearSignature);
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signatureView.clearSignature();
-            }
-        });
         // send button
         send = (Button) view.findViewById(R.id.send);
         send.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +166,7 @@ public class FormPart2Fragment extends Fragment {
 //                    Bundle bundle = new Bundle();
 //                    bundle.putString("roomId", args.getRoomId());
 
-//                    generatePDF();
+                    //generatePDF(getContext());
 
 
                     // navigate to inspectionFragment
@@ -185,12 +178,28 @@ public class FormPart2Fragment extends Fragment {
                 }
             }
         });
+
+        // signature stuff
+        signatureView = (SignatureView) view.findViewById(R.id.signature);
+        clear = (Button) view.findViewById(R.id.clearSignature);
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signatureView.clearSignature();
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                clear.callOnClick();
+            }
+        }, 1);
     }
 
     public void saveBitmap(Bitmap bmp) {
         try {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
-            String filepath = root + "signature.jpg";
+            String filepath = root + "Download/signature.jpg";
 
             FileOutputStream fos = new FileOutputStream(filepath);
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -201,97 +210,49 @@ public class FormPart2Fragment extends Fragment {
             e.printStackTrace();
         }
     }
-//    the canvas way
-//    private void generatePDF() {
-//        // declaring width and height for the PDF file.
-//        int pageHeight = 1188;
-//        int pageWidth = 842;
-//
-//        // creating an object variable for the PDF document.
-//        PdfDocument pdfDocument = new PdfDocument();
-//
-//
-//        Paint paint = new Paint();
-//        Paint title = new Paint();
-//
-//        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create();
-//
-//        // setting start page for the PDF file.
-//        PdfDocument.Page myPage = pdfDocument.startPage(myPageInfo);
-//
-//        // creating a variable for canvas from the page of PDF.
-//        Canvas canvas = myPage.getCanvas();
-//
-//        // below line is used to draw our image on our PDF file.
-//        // the first parameter of our drawbitmap method is
-//        // our bitmap
-//        // second parameter is position from left
-//        // third parameter is position from top and last
-//        // one is our variable for paint.
-//        canvas.drawBitmap(signatureView.getImage(), 56, 40, paint);
-//
-//        // below line is used for adding typeface for
-//        // our text which we will be adding in our PDF file.
-//        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-//
-//        // below line is used for setting text size
-//        // which we will be displaying in our PDF file.
-//        title.setTextSize(15);
-//
-//        // below line is sued for setting color
-//        // of our text inside our PDF file.
-//        title.setColor(ContextCompat.getColor(getContext(), R.color.purple_200));
-//
-//        // below line is used to draw text in our PDF file.
-//        // the first parameter is our text, second parameter
-//        // is position from start, third parameter is position from top
-//        // and then we are passing our variable of paint which is title.
-//        canvas.drawText("A portal for IT professionals.", 209, 100, title);
-//        canvas.drawText("Geeks for Geeks", 209, 80, title);
-//
-//        // similarly we are creating another text and in this
-//        // we are aligning this text to center of our PDF file.
-//        title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-//        title.setColor(ContextCompat.getColor(this, R.color.purple_200));
-//        title.setTextSize(15);
-//
-//        // below line is used for setting
-//        // our text to center of PDF.
-//        title.setTextAlign(Paint.Align.CENTER);
-//        canvas.drawText("This is sample document which we have created.", 396, 560, title);
-//
-//        // after adding all attributes to our
-//        // PDF file we will be finishing our page.
-//        pdfDocument.finishPage(myPage);
-//
-//        // below line is used to set the name of
-//        // our PDF file and its path.
-//        File file = new File(Environment.getExternalStorageDirectory(), "Test.pdf");
-//
-//        try {
-//            // after creating a file name we will
-//            // write our PDF file to that location.
-//            pdfDocument.writeTo(new FileOutputStream(file));
-//
-//            // below line is to print toast message
-//            // on completion of PDF generation.
-//            Toast.makeText(getContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//        } catch (IOException e) {
-//            // below line is used
-//            // to handle error
-//            e.printStackTrace();
-//        }
-//        // after storing our pdf to that
-//        // location we are closing our PDF file.
-//        pdfDocument.close();
-//    }
 
-    private void generatePDF() {
-        System.out.println("generatePDF");
+    private void generatePDF(Context context) {
+//        System.out.println("generatePDF");
+//        PdfGenerator.getBuilder()
+//                .setContext(getContext())
+//                .fromViewSource()
+//                .fromView(view)
+//                .setFileName("Test-PDF")
+//                .setFolderName("Test-PDF-folder")
+//                .openPDFafterGeneration(true)
+//                .build(new PdfGeneratorListener() {
+//                    @Override
+//                    public void onFailure(FailureResponse failureResponse) {
+//                        super.onFailure(failureResponse);
+//                        System.out.println("It failed: " + failureResponse.getErrorMessage());
+//                    }
+//
+//                    @Override
+//                    public void showLog(String log) {
+//                        super.showLog(log);
+//                    }
+//
+//                    @Override
+//                    public void onStartPDFGeneration() {
+//                        /*When PDF generation begins to start*/
+//                    }
+//
+//                    @Override
+//                    public void onFinishPDFGeneration() {
+//                        /*When PDF generation is finished*/
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(SuccessResponse response) {
+//                        super.onSuccess(response);
+//
+//                        System.out.println("PDF Path" + response.getPath());
+//                    }
+//                });
         PdfGenerator.getBuilder()
-                .setContext(getContext())
+                .setContext(context)
                 .fromLayoutXMLSource()
-                .fromLayoutXML(R.layout.fragment_form_part2, R.layout.fragment_form_part2)
+                .fromLayoutXML(R.layout.fragment_form_part2)
                 /* "fromLayoutXML()" takes array of layout resources.
                  * You can also invoke "fromLayoutXMLList()" method here which takes list of layout resources instead of array. */
                 .setFileName("Test-PDF")
@@ -332,7 +293,7 @@ public class FormPart2Fragment extends Fragment {
                         super.onSuccess(response);
                         /* If PDF is generated successfully then you will find SuccessResponse
                          * which holds the PdfDocument,File and path (where generated pdf is stored)*/
-
+                        System.out.println("Successfully made PDF" + response.getPath());
                     }
                 });
     }

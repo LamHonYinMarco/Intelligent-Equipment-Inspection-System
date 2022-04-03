@@ -41,52 +41,15 @@
 //        View view = inflater.inflate(R.layout.question_row, parent, false);
 //
 //        final ViewHolder holder = new ViewHolder(view);
-//
-//        holder.goodOrBad.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.N)
-//            @Override
-//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-//                if (i == R.id.bad) {
-//                    // selected bad, show reason editText
-//                    questions.get(holder.getAdapterPosition()).setNormalOrDefective("bad");
-//                    // show reason editText
-//                    holder.reason.setVisibility(View.VISIBLE);
-//                } else {
-//                    // selected good, remove reason for bad
-//                    holder.reason.setVisibility(View.GONE);
-//                    questions.get(holder.getAdapterPosition()).setNormalOrDefective("good");
-//                    questions.get(holder.getAdapterPosition()).setFollowUpAction("");
-//                }
-//            }
-//        });
-//
-//        // record the reason
-//        holder.reason.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                questions.get(holder.getAdapterPosition()).setFollowUpAction(editable.toString());
-//                System.out.println("Reason: " + questions.get(holder.getAdapterPosition()).getFollowUpAction());
-//            }
-//        });
 //        return holder;
 //    }
 //
 //    @Override
 //    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 //        holder.questionTitleTV.setText(questions.get(position).getQuestionTitle());
-//        if (questions.get(position).getNormalOrDefective() == "good"){
+//        if (questions.get(position).getNormalOrDefective() == "normal"){
 //            holder.good.setChecked(true);
-//        } else if(questions.get(position).getNormalOrDefective() == "bad"){
+//        } else if(questions.get(position).getNormalOrDefective() == "defective"){
 //            holder.bad.setChecked(true);
 //        }
 //        holder.reason.setText(questions.get(position).getFollowUpAction());

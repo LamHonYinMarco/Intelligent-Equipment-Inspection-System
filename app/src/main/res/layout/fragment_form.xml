@@ -11,7 +11,7 @@
         android:id="@+id/formName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Form Name"
+        android:text="Date"
         android:textSize="20dp"
         android:textStyle="bold" />
 
@@ -24,13 +24,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Equipment Name (Code): " />
+            android:text="Equipment Names: " />
 
         <TextView
             android:id="@+id/equipmentNameAndCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name (Code)"
+            android:text="Names"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -108,7 +108,7 @@
                 android:layout_centerVertical="true"
                 android:layout_weight="8"
                 android:gravity="center"
-                android:text="Good" />
+                android:text="normal" />
 
             <View
                 android:layout_width="2dp"
@@ -118,7 +118,7 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2" />
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/bad"
@@ -126,8 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_weight="6"
-                android:text="Bad" />
+                android:layout_weight="8"
+                android:text="defective" />
         </LinearLayout>
     </LinearLayout>
 
@@ -150,12 +150,24 @@
 
                 android:background="@drawable/form_outline" />
 
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/nextPart"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NEXT" />
+                android:layout_marginBottom="5dp"
+                android:text="Signature:" />
+            <ImageView
+                android:id="@+id/pdfSignature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

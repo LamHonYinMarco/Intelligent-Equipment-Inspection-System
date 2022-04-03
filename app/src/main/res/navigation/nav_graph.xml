@@ -45,14 +45,7 @@
         android:id="@+id/formFragment"
         android:name="com.example.intelligentequipmentinspectionsystem.FormFragment"
         android:label="Form"
-        tools:layout="@layout/fragment_form" >
-        <argument
-            android:name="roomId"
-            app:argType="string" />
-        <argument
-            android:name="equipmentId"
-            app:argType="string" />
-    </fragment>
+        tools:layout="@layout/fragment_form" />
     <fragment
         android:id="@+id/formPart2Fragment"
         android:name="com.example.intelligentequipmentinspectionsystem.FormPart2Fragment"

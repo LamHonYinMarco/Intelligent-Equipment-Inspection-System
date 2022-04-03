@@ -57,17 +57,18 @@ public class SignatureView extends View {
         mPaint.setARGB(a, red, green, blue);
     }
     public boolean clearSignature() {
-        if (mBitmap != null)
+        System.out.println("clearSignature ran");
+//        if (mBitmap != null)
             createFakeMotionEvents();
-        if (mCanvas != null) {
+//        if (mCanvas != null) {
             mCanvas.drawColor(Color.WHITE);
 //            mCanvas.drawPaint(bgPaint);
             mPath.reset();
             invalidate();
-        }
-        else {
-            return false;
-        }
+//        }
+//        else {
+//            return false;
+//        }
         return true;
     }
     public Bitmap getImage() {
