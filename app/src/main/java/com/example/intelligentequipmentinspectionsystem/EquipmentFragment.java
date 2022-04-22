@@ -104,7 +104,7 @@ public class EquipmentFragment extends Fragment {
                             for (int i=0; i < data1.size(); i++){
                                 Question question = new Question();
                                 question.setQuestionTitle(data1.get(i));
-                                question.setQuestionId(equipmentId.get(i));
+                                question.setEquipmentId(equipmentId.get(i));
                                 questions.add(question);
                             }
 

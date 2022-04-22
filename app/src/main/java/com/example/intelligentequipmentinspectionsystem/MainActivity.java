@@ -21,6 +21,8 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -28,8 +30,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        System.out.println("In main");
-
+        System.out.println("In main: " + GlobalVariable.refreshTokenFailed);
+        try {
+           JWTUtils.decoded(GlobalVariable.accessToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(GlobalVariable.refreshTokenFailed){
+            GlobalVariable.refreshTokenFailed = false;
+            clearData();
+            Intent i = new Intent( MainActivity.this, Login.class);
+            startActivity(i);
+        }
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setBackground(null);
         bottomNav.getMenu().getItem(1).setEnabled(false);
@@ -84,4 +96,10 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    private void clearData() {
+        SharedPreferences preferences = this.getSharedPreferences("UsernamePref", 0);
+        preferences.edit().remove("username").commit();
+        SharedPreferences preferences2 = this.getSharedPreferences("TokenPref", 0);
+        preferences2.edit().clear().commit();
+    }
 }

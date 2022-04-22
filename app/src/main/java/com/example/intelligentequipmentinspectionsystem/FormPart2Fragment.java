@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 
@@ -48,6 +49,9 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,7 +71,7 @@ public class FormPart2Fragment extends Fragment {
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private Button send, clear;
     private SignatureView signatureView;
-
+    DataService dataService = new DataService();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -156,20 +160,25 @@ public class FormPart2Fragment extends Fragment {
                     Toast toast = Toast.makeText(getContext(), "Please Sign", Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
-                    saveBitmap(signatureView.getImage());
+                    saveBitmap(signatureView.getImage(),"signature");
+                    if (imageView.getDrawable() != null){
+                        BitmapDrawable draw = (BitmapDrawable) imageView.getDrawable();
+                        Bitmap bitmap = draw.getBitmap();
+                        saveBitmap(bitmap,"equipment");
+                    }
+
+                    setQuestions();
+
                     Toast toast = Toast.makeText(getContext(), "Form Sent", Toast.LENGTH_SHORT);
                     toast.show();
                     // get data from last fragment
 //                    FormPart2FragmentArgs args = FormPart2FragmentArgs.fromBundle(getArguments());
-
                     // prepare bundle for next fragment
 //                    Bundle bundle = new Bundle();
 //                    bundle.putString("roomId", args.getRoomId());
-
                     //generatePDF(getContext());
-
-
                     // navigate to inspectionFragment
+//                    Getting question id
                     GlobalVariable.backPressed = false;
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
                     navController.navigateUp();
@@ -196,10 +205,10 @@ public class FormPart2Fragment extends Fragment {
         }, 1);
     }
 
-    public void saveBitmap(Bitmap bmp) {
+    public void saveBitmap(Bitmap bmp, String imageName) {
         try {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
-            String filepath = root + "Download/signature.jpg";
+            String filepath = root + "Download/"+imageName+".jpg";
 
             FileOutputStream fos = new FileOutputStream(filepath);
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -211,6 +220,83 @@ public class FormPart2Fragment extends Fragment {
         }
     }
 
+    public void setQuestions(){
+        dataService.getQuestions(new DataService.ResponseListenerForQuestions() {
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onResponse(List<Question> questions) {
+
+                // find question id for the 3
+                String normalId = "";
+                String defectiveId = "";
+                String followUpId = "";
+                for (int i=0; i < questions.size(); i++){
+                    if(questions.get(i).getQuestionTitle().toLowerCase().contains("normal")){
+                        normalId = questions.get(i).getQuestionId();
+                    }
+                    if(questions.get(i).getQuestionTitle().toLowerCase().contains("defect")){
+                        defectiveId = questions.get(i).getQuestionId();
+                    }
+                    if(questions.get(i).getQuestionTitle().toLowerCase().contains("follow")){
+                        followUpId = questions.get(i).getQuestionId();
+                    }
+                }
+
+                // set question id for all
+                for (int i = 0; i < GlobalVariable.globalQuestions.size(); i++) {
+                    if(GlobalVariable.globalQuestions.get(i).getNormalOrDefective().equals("normal")){
+                        GlobalVariable.globalQuestions.get(i).setQuestionId(normalId);
+                    } else {
+                        if(!GlobalVariable.globalQuestions.get(i).getFollowUpAction().equals("")){
+                            GlobalVariable.globalQuestions.get(i).setQuestionId(followUpId);
+                        } else {
+                            GlobalVariable.globalQuestions.get(i).setQuestionId(defectiveId);
+                        }
+                    }
+                    System.out.println("Set question id for question " +i+" = "+GlobalVariable.globalQuestions.get(i).getQuestionId());
+                }
+
+                // next to set form id
+                setFormId();
+            }
+        });
+    }
+
+    public void setFormId(){
+        dataService.getForms(new DataService.ResponseListenerForFormId() {
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onResponse(HashMap<String, String> equipmentIdForFormId) {
+                // set form id
+                for(int i = 0; i < GlobalVariable.globalQuestions.size(); i++){
+                    System.out.println("EquipmentId: "+i+" = " + GlobalVariable.globalQuestions.get(i).getEquipmentId());
+                    System.out.println("FormId: " +i+" = "+ equipmentIdForFormId.get(GlobalVariable.globalQuestions.get(i).getEquipmentId()));
+                    GlobalVariable.globalQuestions.get(i).setFormId(equipmentIdForFormId.get(GlobalVariable.globalQuestions.get(i).getEquipmentId()));
+                    System.out.println("Set form id for question " +i+" = "+GlobalVariable.globalQuestions.get(i).getFormId());
+                }
+                // next to post answers
+                postAnswers();
+            }
+        });
+    }
+
+    public void postAnswers(){
+        boolean hasImage = true;
+        if (imageView.getDrawable() == null){
+            hasImage = false;
+        }
+        for (int i = 0; i < GlobalVariable.globalQuestions.size(); i++) {
+            dataService.postAnswer(GlobalVariable.globalQuestions.get(i),hasImage);
+        }
+    }
     private void generatePDF(Context context) {
 //        System.out.println("generatePDF");
 //        PdfGenerator.getBuilder()
@@ -297,4 +383,5 @@ public class FormPart2Fragment extends Fragment {
                     }
                 });
     }
+
 }

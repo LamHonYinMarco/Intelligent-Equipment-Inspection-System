@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,9 +112,13 @@ public class AccessTokenRepository {
             JSONObject object = new JSONObject(response.body().string());
             // Get value from that JSONObject
             accessToken = object.getString("access");
+            System.out.println("setting refreshTokenFailed to false");
+            GlobalVariable.refreshTokenFailed = false;
         } catch (IOException | JSONException ioException) {
             System.out.println("Refresh Fail: ");
             System.out.println(ioException);
+            System.out.println("setting refreshTokenFailed to true");
+            GlobalVariable.refreshTokenFailed = true;
         }
         GlobalVariable.accessToken = accessToken;
         return accessToken;

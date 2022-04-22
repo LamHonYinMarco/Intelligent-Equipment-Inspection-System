@@ -1,19 +1,30 @@
 package com.example.intelligentequipmentinspectionsystem;
 
 public class Question {
+    private String formId;
+    private String equipmentId;
     private String questionId;
     private String questionTitle;
     private String normalOrDefective = "null";
-    private String followUpAction;
+    private String followUpAction = "";
 
     public Question() {
     }
 
-    public Question(String questionId, String questionTitle, String normalOrDefective, String followUpAction) {
-        this.questionId = questionId;
-        this.questionTitle = questionTitle;
-        this.normalOrDefective = normalOrDefective;
-        this.followUpAction = followUpAction;
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId;
+    }
+
+    public String getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(String equipmentId) {
+        this.equipmentId = equipmentId;
     }
 
     public String getQuestionId() {
