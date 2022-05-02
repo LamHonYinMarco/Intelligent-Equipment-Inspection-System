@@ -2,11 +2,19 @@ package com.example.intelligentequipmentinspectionsystem;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +22,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class HistoryFragment extends Fragment {
+    private RecyclerView recyclerView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,4 +70,31 @@ public class HistoryFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_history, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.historyRecyclerView);
+        DataService dataService = new DataService();
+        dataService.getAnswers(new DataService.ResponseListenerFor4ListString() {
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onResponse(List<String> data1, List<String> data2, List<String> date, List<String> id) {
+                HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), data1, data2, date, id);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setAdapter(historyAdapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    }
+                });
+            }
+        });
+    }
+
 }

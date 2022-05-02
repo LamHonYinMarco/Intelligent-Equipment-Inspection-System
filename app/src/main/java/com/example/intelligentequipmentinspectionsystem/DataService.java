@@ -33,7 +33,7 @@ public class DataService {
         void onResponse(JSONArray jsonArray);
     }
 
-    private interface ReturnJsonObject {
+    public interface ReturnJsonObject {
         void onError(String message);
 
         void onResponse(JSONObject jsonObject);
@@ -43,6 +43,12 @@ public class DataService {
         void onError(String message);
 
         void onResponse(List<String> data1, List<String> data2, List<String> id);
+    }
+
+    public interface ResponseListenerFor4ListString {
+        void onError(String message);
+
+        void onResponse(List<String> data1, List<String> data2, List<String> date, List<String> id);
     }
 
     public interface ResponseListenerForSingle {
@@ -61,10 +67,6 @@ public class DataService {
         void onError(String message);
 
         void onResponse(HashMap<String, String> equipmentIdForFormId);
-    }
-
-    public void getToken(ResponseListenerForSingle responseListenerForSingle) {
-
     }
 
     public interface ResponseListenerForSuccess {
@@ -123,6 +125,9 @@ public class DataService {
                         JSONArray array = obj1.getJSONArray("equipments");
                         JSONObject obj2 = array.getJSONObject(0);
                         equipmentIdForFormId.put(obj2.getString("equipment_id"),obj1.getString("form_id"));
+
+                        // set answerId
+                        GlobalVariable.globalQuestions.get(i).setAnswerId(jsonArray.getJSONObject(0).getString("unique_id"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -196,6 +201,37 @@ public class DataService {
         });
     }
 
+    public void getAnswers(ResponseListenerFor4ListString responseListenerFor4ListString) {
+        List<String> roomNames = new ArrayList<>();
+        List<String> roomLocations = new ArrayList<>();
+        List<String> dates = new ArrayList<>();
+        List<String> answerIds = new ArrayList<>();
+        getJSONArray("answer", new ReturnJsonArray() {
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onResponse(JSONArray jsonArray) {
+                try {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        roomNames.add(jsonArray.getJSONObject(i).getString("room_name"));
+                        roomLocations.add(jsonArray.getJSONObject(i).getString("room_location"));
+                        answerIds.add(jsonArray.getJSONObject(i).getString("id"));
+                        dates.add(jsonArray.getJSONObject(i).getString("created_at").substring(0,10));
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+                System.out.println("DataService getAnswers Names: " + roomNames);
+                System.out.println("DataService getAnswers Locations: " + roomLocations);
+                System.out.println("DataService getAnswers Dates: " + dates);
+                System.out.println("DataService getAnswers ID: " + answerIds);
+                responseListenerFor4ListString.onResponse(roomNames, roomLocations, dates,answerIds);
+            }
+        });
+    }
 //    public void getRoomById(String id, ResponseListenerForSingle responseListenerForSingle) {
 //        temporaryGet("room/" + id, new ReturnJsonObject() {
 //            @Override
@@ -284,6 +320,42 @@ public class DataService {
         });
     }
 
+    public void getJSONObject(String url,String id, ReturnJsonObject returnJsonObject) {
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient client = okHttpClient.newBuilder()
+                .authenticator(new AccessTokenAuthenticator())
+                .addInterceptor(new AccessTokenInterceptor())
+                .build();
+//        OkHttpClient client = new OkHttpClient().newBuilder()
+//                .build();
+        Request request = new Request.Builder()
+                .url(GlobalVariable.BASE_URL + url + "/" + id)
+                .method("GET", null)
+//                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()){
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    returnJsonObject.onResponse(jsonObject);
+                } else {
+                    System.out.println("getJSONObject failed");
+                }
+            }
+        });
+    }
+
     public void postAnswer(Question question, boolean hasImage) {
 
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -310,6 +382,7 @@ public class DataService {
                     .addFormDataPart("signature",Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/signature.jpg",
                             RequestBody.create(MediaType.parse("application/octet-stream"),
                                     new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/signature.jpg")))
+                    .addFormDataPart("unique_id",GlobalVariable.globalQuestions.get(0).getAnswerId())
                     .build();
         } else {
             body = new MultipartBody.Builder().setType(MultipartBody.FORM)
@@ -321,6 +394,7 @@ public class DataService {
                     .addFormDataPart("signature",Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/signature.jpg",
                             RequestBody.create(MediaType.parse("application/octet-stream"),
                                     new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/signature.jpg")))
+                    .addFormDataPart("unique_id",GlobalVariable.globalQuestions.get(0).getAnswerId())
                     .build();
         }
         Request request = new Request.Builder()

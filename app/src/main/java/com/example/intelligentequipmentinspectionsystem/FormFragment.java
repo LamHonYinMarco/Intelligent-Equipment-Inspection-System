@@ -1,110 +1,118 @@
-//package com.example.intelligentequipmentinspectionsystem;
-//
-//import android.content.SharedPreferences;
-//import android.os.Build;
-//import android.os.Bundle;
-//
-//import androidx.annotation.NonNull;
-//import androidx.annotation.Nullable;
-//import androidx.annotation.RequiresApi;
-//import androidx.fragment.app.Fragment;
-//import androidx.navigation.Navigation;
-//import androidx.recyclerview.widget.LinearLayoutManager;
-//import androidx.recyclerview.widget.RecyclerView;
-//
-//import android.os.Handler;
-//import android.os.Looper;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.Button;
-//import android.widget.TextView;
-//import android.widget.Toast;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-///**
-// * A simple {@link Fragment} subclass.
-// * Use the {@link FormFragment#newInstance} factory method to
-// * create an instance of this fragment.
-// */
-//public class FormFragment extends Fragment {
-//    private RecyclerView recyclerView;
-//    private TextView formName, equipmentNameAndCode, roomNameAndLocation, inspector;
-//    private Button nextPart;
-//
-//
-//    // TODO: Rename parameter arguments, choose names that match
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-//
-//    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-//
-//    public FormFragment() {
-//        // Required empty public constructor
-//    }
-//
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment FormFragment.
-//     */
-//    // TODO: Rename and change types and number of parameters
-//    public static FormFragment newInstance(String param1, String param2) {
-//        FormFragment fragment = new FormFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_form, container, false);
-//    }
-//
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        recyclerView = (RecyclerView) view.findViewById(R.id.formRecyclerView);
-//        formName = (TextView) view.findViewById(R.id.formName);
-//        equipmentNameAndCode = (TextView) view.findViewById(R.id.equipmentNameAndCode);
-//        roomNameAndLocation = (TextView) view.findViewById(R.id.roomNameAndLocation);
-//        inspector = (TextView) view.findViewById(R.id.inspector);
-//        nextPart = (Button) view.findViewById(R.id.nextPart);
-//
-//        if (getArguments() != null) {
-//            // get data from last fragment
-//            FormFragmentArgs args = FormFragmentArgs.fromBundle(getArguments());
-//
-//            // prepare bundle for next fragment
-//            Bundle bundle = new Bundle();
-//            bundle.putString("roomId", args.getRoomId());
-//
-//            // open dataService to start getting data
+package com.example.intelligentequipmentinspectionsystem;
+
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONObject;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link FormFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class FormFragment extends Fragment {
+    private RecyclerView recyclerView;
+    private TextView formDate, equipmentNameAndCode, roomNameAndLocation, inspector;
+    private FloatingActionButton fab;
+
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public FormFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment FormFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static FormFragment newInstance(String param1, String param2) {
+        FormFragment fragment = new FormFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_form, container, false);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.formRecyclerView);
+        formDate = (TextView) view.findViewById(R.id.formDate);
+        roomNameAndLocation = (TextView) view.findViewById(R.id.roomNameAndLocation);
+        inspector = (TextView) view.findViewById(R.id.inspector);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+
+
+
+        if (getArguments() != null) {
+            // get data from last fragment
+            FormFragmentArgs args = FormFragmentArgs.fromBundle(getArguments());
+
+            // open dataService to start getting data
 //            DataService dataService = new DataService();
 //
-//            // get room id by id
+//            dataService.getJSONObject("answer", args.getAnswerId(), new DataService.ReturnJsonObject() {
+//                @Override
+//                public void onError(String message) {
+//
+//                }
+//
+//                @Override
+//                public void onResponse(JSONObject jsonObject) {
+//
+//
+//                }
+//            });
+            // get room id by id
 //            dataService.getRoomById(args.getRoomId(), new DataService.ResponseListenerForSingle() {
 //                @Override
 //                public void onError(String message) {
@@ -138,32 +146,29 @@
 //                        public void run() {
 //                            equipmentNameAndCode.setText(data1 + " (" + data2 + ")");
 //                            //TODO remove this
-//                            formName.setText(data1 + " Form");
+//                            formDate.setText(data1 + " Form");
 //                        }
 //                    });
 //
 //                }
 //            });
-//
-//            // set the inspector name to login name
-//            inspector.setText(getUsername());
-//
-//            // show the list of questions
-//            FormAdapter formAdapter;
-//                formAdapter = new FormAdapter(getContext(), GlobalVariable.globalQuestions);
-//
-//            recyclerView.setAdapter(formAdapter);
-//            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//
-//
-//        }
-//    }
-//
-//    private String getUsername() {
-//        SharedPreferences sharedPreferences = getContext().getSharedPreferences("UsernamePref", 0);
-//        String username = sharedPreferences.getString("username", "");
-//        return username;
-//    }
-//
-//
-//}
+
+
+            // show the list of questions
+            formDate.setText("2022-04-30");
+            roomNameAndLocation.setText("Snooker_Room (2/F)");
+            inspector.setText("Marco");
+            FormAdapter formAdapter;
+                formAdapter = new FormAdapter(getContext(), GlobalVariable.globalQuestions);
+
+            recyclerView.setAdapter(formAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        }
+    }
+
+
+
+
+}

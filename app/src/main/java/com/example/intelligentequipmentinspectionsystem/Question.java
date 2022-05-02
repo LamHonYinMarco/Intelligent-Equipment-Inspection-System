@@ -4,11 +4,20 @@ public class Question {
     private String formId;
     private String equipmentId;
     private String questionId;
+    private String answerId;
     private String questionTitle;
     private String normalOrDefective = "null";
     private String followUpAction = "";
 
     public Question() {
+    }
+
+    public String getAnswerId() {
+        return answerId;
+    }
+
+    public void setAnswerId(String answerId) {
+        this.answerId = answerId;
     }
 
     public String getFormId() {

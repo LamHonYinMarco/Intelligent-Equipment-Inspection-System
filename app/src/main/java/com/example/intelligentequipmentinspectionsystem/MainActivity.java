@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.getMenu().getItem(1).setEnabled(false);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.inspectionFragment, R.id.historyFragment, R.id.cameraFragment, R.id.settingsFragment)
+                R.id.inspectionFragment, R.id.cameraFragment, R.id.settingsFragment)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(bottomNav, navController);

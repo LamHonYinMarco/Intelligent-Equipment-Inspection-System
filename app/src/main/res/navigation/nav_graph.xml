@@ -9,7 +9,11 @@
         android:id="@+id/historyFragment"
         android:name="com.example.intelligentequipmentinspectionsystem.HistoryFragment"
         android:label="History"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_formFragment"
+            app:destination="@id/formFragment" />
+    </fragment>
     <fragment
         android:id="@+id/inspectionFragment"
         android:name="com.example.intelligentequipmentinspectionsystem.InspectionFragment"
@@ -18,6 +22,9 @@
         <action
             android:id="@+id/action_inspectionFragment_to_equipmentFragment"
             app:destination="@id/equipmentFragment" />
+        <action
+            android:id="@+id/action_inspectionFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -45,7 +52,11 @@
         android:id="@+id/formFragment"
         android:name="com.example.intelligentequipmentinspectionsystem.FormFragment"
         android:label="Form"
-        tools:layout="@layout/fragment_form" />
+        tools:layout="@layout/fragment_form" >
+        <argument
+            android:name="answerId"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/formPart2Fragment"
         android:name="com.example.intelligentequipmentinspectionsystem.FormPart2Fragment"

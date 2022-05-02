@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 public class InspectionFragment extends Fragment {
     private RecyclerView recyclerView;
     private EditText searchBar;
+    private ImageView historyIcon;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,6 +79,14 @@ public class InspectionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_inspection, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.roomRecyclerView);
         searchBar = (EditText) view.findViewById(R.id.roomSearchBar);
+        historyIcon = (ImageView) view.findViewById(R.id.historyIcon);
+
+        historyIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.historyFragment);
+            }
+        });
 
         DataService dataService = new DataService();
         dataService.getRooms(new DataService.ResponseListenerForList() {
