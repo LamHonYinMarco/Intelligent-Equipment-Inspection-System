@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -121,7 +123,7 @@ public class FormFragment extends Fragment {
                     // Get list of jsonObjects
                     for (int i = 0; i < jsonArray.length(); i++) {
                         try {
-                            if (jsonArray.getJSONObject(i).getString("unique_id").equals(args.getAnswerGroupId())){
+                            if (jsonArray.getJSONObject(i).getString("unique_id").equals(args.getAnswerGroupId())) {
                                 jsonObjects.add(jsonArray.getJSONObject(i));
                             }
                         } catch (JSONException e) {
@@ -139,7 +141,7 @@ public class FormFragment extends Fragment {
                                 JSONObject obj1 = jsonObjects.get(0);
                                 formDate.setText(obj1.getString("created_at"));
 
-                                String nameAndLocation = obj1.getString("room_name") + " ("+obj1.getString("room_location")+")";
+                                String nameAndLocation = obj1.getString("room_name") + " (" + obj1.getString("room_location") + ")";
                                 roomNameAndLocation.setText(nameAndLocation);
 
                                 JSONObject obj2 = obj1.getJSONObject("created_by");
@@ -150,8 +152,8 @@ public class FormFragment extends Fragment {
 
                             // set roomImg, might not have
                             try {
-                                if (!jsonObjects.get(0).getString("image").equals("")){
-                                    String path = GlobalVariable.BASE_URL.substring(0,GlobalVariable.BASE_URL.length()-1) + jsonObjects.get(0).getString("image");
+                                if (!jsonObjects.get(0).getString("image").equals("")) {
+                                    String path = GlobalVariable.BASE_URL.substring(0, GlobalVariable.BASE_URL.length() - 1) + jsonObjects.get(0).getString("image");
                                     System.out.println(path);
                                     Picasso.get().load(path).into(roomImg);
                                 } else {
@@ -163,7 +165,7 @@ public class FormFragment extends Fragment {
 
                             // set signature
                             try {
-                                Picasso.get().load(GlobalVariable.BASE_URL.substring(0,GlobalVariable.BASE_URL.length()-1) + jsonObjects.get(0).getString("signature")).into(signature);
+                                Picasso.get().load(GlobalVariable.BASE_URL.substring(0, GlobalVariable.BASE_URL.length() - 1) + jsonObjects.get(0).getString("signature")).into(signature);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -189,13 +191,22 @@ public class FormFragment extends Fragment {
 
                         @Override
                         public void onResponse(String filepath) {
-                            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-                            StrictMode.setVmPolicy(builder.build());
-                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
                             File file = new File(filepath);
-                            Uri uri = Uri.fromFile(file);
-                            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                            startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+                            Uri contentUri = FileProvider.getUriForFile(requireContext(),
+                                    BuildConfig.APPLICATION_ID + ".provider", file);
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("application/pdf");
+                            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                            startActivity(Intent.createChooser(intent, "Send Email"));
+
+
+//                            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//                            StrictMode.setVmPolicy(builder.build());
+//                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+//                            File file = new File(filepath);
+//                            Uri uri = Uri.fromFile(file);
+//                            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+//                            startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
                         }
                     });
                 }
