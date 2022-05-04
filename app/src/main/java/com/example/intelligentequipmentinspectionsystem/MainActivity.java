@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent( MainActivity.this, Login.class);
             startActivity(i);
         }
+
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setBackground(null);
         bottomNav.getMenu().getItem(1).setEnabled(false);

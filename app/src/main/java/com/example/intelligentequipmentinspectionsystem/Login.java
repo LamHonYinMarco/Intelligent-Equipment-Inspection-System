@@ -37,7 +37,7 @@ import okhttp3.Response;
 
 public class Login extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
-    EditText username, password;
+    EditText username, password, serverURL;
     Button loginButton;
     String refreshToken = "";
     String accessToken = "";
@@ -46,6 +46,9 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("In login" + getRefreshToken());
+        if (getSeverURL() != ""){
+            GlobalVariable.BASE_URL = getSeverURL();
+        }
         if (getRefreshToken() != ""){
             System.out.println("Already have token");
             GlobalVariable.refreshToken = getRefreshToken();
@@ -60,72 +63,80 @@ public class Login extends AppCompatActivity {
         username = (EditText) findViewById(R.id.login_username);
         password = (EditText) findViewById(R.id.login_password);
         loginButton = (Button) findViewById(R.id.login_button);
+        serverURL = (EditText) findViewById(R.id.serverURL);
+        serverURL.setText(GlobalVariable.BASE_URL);
 
         if (!checkPermission()) {
             System.out.println("requestPermission");
             requestPermission();
         }
 
-
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                GlobalVariable.BASE_URL = serverURL.getText().toString();
+                saveServerURL(serverURL.getText().toString());
                 if (username.getText().toString().equals("") || password.getText().toString().equals("")) {
                     Toast toast = Toast.makeText(Login.this, "Please Enter Username and Password", Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
-                    OkHttpClient client = new OkHttpClient().newBuilder()
-                            .build();
-                    MediaType mediaType = MediaType.parse("application/json");
-                    RequestBody body = RequestBody.create(mediaType, "{\r\n    \"username\": \"" + username.getText().toString() + "\",\r\n    \"password\": \"" + password.getText().toString() + "\"\r\n}");
-                    Request request = new Request.Builder()
-                            .url(GlobalVariable.BASE_URL + "login/")
-                            .method("POST", body)
-                            .addHeader("Content-Type", "application/json")
-                            .build();
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            System.out.println("onFailure");
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                            System.out.println("It went in");
-                            if (response.isSuccessful()) {
-                                try {
-                                    json = new JSONObject(response.body().string());
-                                    System.out.println("refreshToken: " + json.get("refresh") + "\naccessToken: " + json.get("access"));
-                                    refreshToken = json.get("refresh").toString();
-                                    accessToken = json.get("access").toString();
-                                    saveTokens(refreshToken, accessToken);
-                                    GlobalVariable.refreshToken = refreshToken;
-                                    GlobalVariable.accessToken = accessToken;
-                                    saveUsername(username.getText().toString());
-//                                    finish();
-                                    Intent i = new Intent(Login.this, MainActivity.class);
-                                    startActivity(i);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                System.out.println("Wrong username or password");
-
-                                // needs to be on UI thread to use toast
-                                Handler handler = new Handler(Looper.getMainLooper());
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast toast = Toast.makeText(Login.this, "Wrong username or password", Toast.LENGTH_SHORT);
-                                        toast.show();
-                                    }
-                                });
-
+                    try {
+                        OkHttpClient client = new OkHttpClient().newBuilder()
+                                .build();
+                        MediaType mediaType = MediaType.parse("application/json");
+                        RequestBody body = RequestBody.create(mediaType, "{\r\n    \"username\": \"" + username.getText().toString() + "\",\r\n    \"password\": \"" + password.getText().toString() + "\"\r\n}");
+                        Request request = new Request.Builder()
+                                .url(GlobalVariable.BASE_URL + "login/")
+                                .method("POST", body)
+                                .addHeader("Content-Type", "application/json")
+                                .build();
+                        client.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                System.out.println("onFailure");
+                                e.printStackTrace();
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                System.out.println("It went in");
+                                if (response.isSuccessful()) {
+                                    try {
+                                        json = new JSONObject(response.body().string());
+                                        System.out.println("refreshToken: " + json.get("refresh") + "\naccessToken: " + json.get("access"));
+                                        refreshToken = json.get("refresh").toString();
+                                        accessToken = json.get("access").toString();
+                                        saveTokens(refreshToken, accessToken);
+                                        GlobalVariable.refreshToken = refreshToken;
+                                        GlobalVariable.accessToken = accessToken;
+                                        saveUsername(username.getText().toString());
+//                                    finish();
+                                        Intent i = new Intent(Login.this, MainActivity.class);
+                                        startActivity(i);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    System.out.println("Wrong username or password");
+
+                                    // needs to be on UI thread to use toast
+                                    Handler handler = new Handler(Looper.getMainLooper());
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast toast = Toast.makeText(Login.this, "Wrong username or password", Toast.LENGTH_SHORT);
+                                            toast.show();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        Toast toast = Toast.makeText(Login.this, "Please check serverURL", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+
                 }
             }
         });
@@ -145,6 +156,19 @@ public class Login extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("username", username);
         editor.apply();
+    }
+
+    private void saveServerURL(String serverURL) {
+        SharedPreferences sharedPreferences = getSharedPreferences("ServerURLPref", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("serverURL", serverURL);
+        editor.apply();
+    }
+
+    private String getSeverURL() {
+        SharedPreferences sharedPreferences = getSharedPreferences("ServerURLPref", 0);
+        String severURL = sharedPreferences.getString("serverURL", "");
+        return severURL;
     }
 
     // close keyboard when tap outside
