@@ -102,4 +102,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences2 = this.getSharedPreferences("TokenPref", 0);
         preferences2.edit().clear().commit();
     }
+
+
+
 }

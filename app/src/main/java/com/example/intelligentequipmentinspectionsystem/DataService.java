@@ -9,8 +9,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,7 +30,7 @@ public class DataService {
     public DataService() {
     }
 
-    private interface ReturnJsonArray {
+    public interface ReturnJsonArray {
         void onError(String message);
 
         void onResponse(JSONArray jsonArray);
@@ -50,6 +53,12 @@ public class DataService {
 
         void onResponse(List<String> data1, List<String> data2, List<String> date, List<String> id);
     }
+    public interface ResponseListenerForJSONObjects {
+        void onError(String message);
+
+        void onResponse(List<JSONObject> jsonObjects);
+    }
+
 
     public interface ResponseListenerForSingle {
         void onError(String message);
@@ -121,13 +130,17 @@ public class DataService {
 //                System.out.println("getForms jsonArray: " + jsonArray);
                 try {
                     for (int i = 0; i < jsonArray.length(); i++) {
+                        System.out.println("loop number: "+i);
+                        System.out.println("GlobalVariable.globalQuestions.size(): " + GlobalVariable.globalQuestions.size());
                         JSONObject obj1 = jsonArray.getJSONObject(i);
                         JSONArray array = obj1.getJSONArray("equipments");
                         JSONObject obj2 = array.getJSONObject(0);
                         equipmentIdForFormId.put(obj2.getString("equipment_id"),obj1.getString("form_id"));
 
                         // set answerId
-                        GlobalVariable.globalQuestions.get(i).setAnswerId(jsonArray.getJSONObject(0).getString("unique_id"));
+                        if (i < GlobalVariable.globalQuestions.size()){
+                            GlobalVariable.globalQuestions.get(i).setGroupAnswerId(jsonArray.getJSONObject(0).getString("unique_id"));
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -201,11 +214,9 @@ public class DataService {
         });
     }
 
-    public void getAnswers(ResponseListenerFor4ListString responseListenerFor4ListString) {
-        List<String> roomNames = new ArrayList<>();
-        List<String> roomLocations = new ArrayList<>();
-        List<String> dates = new ArrayList<>();
-        List<String> answerIds = new ArrayList<>();
+    public void getAllGroupAnswers(ResponseListenerForJSONObjects responseListenerForJSONObjects) {
+        List<String> groupAnswerIds = new ArrayList<>();
+        List<JSONObject> jsonObjects = new ArrayList<>();
         getJSONArray("answer", new ReturnJsonArray() {
             @Override
             public void onError(String message) {
@@ -215,23 +226,48 @@ public class DataService {
             @Override
             public void onResponse(JSONArray jsonArray) {
                 try {
+
+                    // Get list of all unique_id
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        roomNames.add(jsonArray.getJSONObject(i).getString("room_name"));
-                        roomLocations.add(jsonArray.getJSONObject(i).getString("room_location"));
-                        answerIds.add(jsonArray.getJSONObject(i).getString("id"));
-                        dates.add(jsonArray.getJSONObject(i).getString("created_at").substring(0,10));
+                        groupAnswerIds.add(jsonArray.getJSONObject(i).getString("unique_id"));
                     }
+                    // Create a new LinkedHashSet
+                    Set<String> set = new LinkedHashSet<>();
+
+                    // Add the elements to set
+                    set.addAll(groupAnswerIds);
+
+                    // Clear the list
+                    groupAnswerIds.clear();
+
+                    // add the elements of set
+                    // with no duplicates to the list
+                    groupAnswerIds.addAll(set);
+                    System.out.println("List without dupes: " + groupAnswerIds);
+
+                    // Get list of unique objects
+                    for (int x = 0; x < groupAnswerIds.size(); x++) {
+                        for (int y = 0; y < jsonArray.length(); y++) {
+                            if(groupAnswerIds.get(x).equals(jsonArray.getJSONObject(y).getString("unique_id"))){
+                                jsonObjects.add(jsonArray.getJSONObject(y));
+                                break;
+                            }
+                        }
+                    }
+                    System.out.println("List of unique obj" + jsonObjects);
+
+                    Collections.reverse(jsonObjects);
+                    System.out.println("List of unique obj after reverse" + jsonObjects);
+
                 }catch (JSONException e){
                     e.printStackTrace();
                 }
-                System.out.println("DataService getAnswers Names: " + roomNames);
-                System.out.println("DataService getAnswers Locations: " + roomLocations);
-                System.out.println("DataService getAnswers Dates: " + dates);
-                System.out.println("DataService getAnswers ID: " + answerIds);
-                responseListenerFor4ListString.onResponse(roomNames, roomLocations, dates,answerIds);
+                responseListenerForJSONObjects.onResponse(jsonObjects);
             }
         });
     }
+
+
 //    public void getRoomById(String id, ResponseListenerForSingle responseListenerForSingle) {
 //        temporaryGet("room/" + id, new ReturnJsonObject() {
 //            @Override
@@ -382,7 +418,7 @@ public class DataService {
                     .addFormDataPart("signature",Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/signature.jpg",
                             RequestBody.create(MediaType.parse("application/octet-stream"),
                                     new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/signature.jpg")))
-                    .addFormDataPart("unique_id",GlobalVariable.globalQuestions.get(0).getAnswerId())
+                    .addFormDataPart("unique_id",GlobalVariable.globalQuestions.get(0).getGroupAnswerId())
                     .build();
         } else {
             body = new MultipartBody.Builder().setType(MultipartBody.FORM)
@@ -394,11 +430,44 @@ public class DataService {
                     .addFormDataPart("signature",Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/signature.jpg",
                             RequestBody.create(MediaType.parse("application/octet-stream"),
                                     new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/signature.jpg")))
-                    .addFormDataPart("unique_id",GlobalVariable.globalQuestions.get(0).getAnswerId())
+                    .addFormDataPart("unique_id",GlobalVariable.globalQuestions.get(0).getGroupAnswerId())
                     .build();
         }
         Request request = new Request.Builder()
                 .url(GlobalVariable.BASE_URL + "answer/")
+                .method("POST", body)
+//                .addHeader("Authorization", "Basic c3RhZmY6c3RhZmY=")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()){
+                    System.out.println(response);
+                }
+            }
+        });
+    }
+
+    public void postImageToAI(String path, ReturnJsonObject returnJsonObject){
+        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient client = okHttpClient.newBuilder()
+                .authenticator(new AccessTokenAuthenticator())
+                .addInterceptor(new AccessTokenInterceptor())
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("image",path,
+                        RequestBody.create(MediaType.parse("application/octet-stream"),
+                                new File(path)))
+                .build();
+        Request request = new Request.Builder()
+                .url(GlobalVariable.BASE_URL + "predict/")
                 .method("POST", body)
 //                .addHeader("Authorization", "Basic c3RhZmY6c3RhZmY=")
                 .build();
@@ -411,12 +480,22 @@ public class DataService {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()){
-                    System.out.println(response);
+                    try {
+                        jsonArray = new JSONArray(response.body().string());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        returnJsonObject.onResponse(jsonArray.getJSONObject(0));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("getJSONArray failed");
                 }
             }
         });
     }
-
 //    public void temporaryGet(String url, ReturnJsonObject returnJsonObject) {
 //        OkHttpClient okHttpClient = new OkHttpClient();
 //        OkHttpClient client = okHttpClient.newBuilder()
@@ -451,5 +530,4 @@ public class DataService {
 //            }
 //        });
 //    }
-
 }

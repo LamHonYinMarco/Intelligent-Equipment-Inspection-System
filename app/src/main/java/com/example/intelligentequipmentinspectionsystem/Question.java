@@ -4,7 +4,7 @@ public class Question {
     private String formId;
     private String equipmentId;
     private String questionId;
-    private String answerId;
+    private String groupAnswerId;
     private String questionTitle;
     private String normalOrDefective = "null";
     private String followUpAction = "";
@@ -12,12 +12,12 @@ public class Question {
     public Question() {
     }
 
-    public String getAnswerId() {
-        return answerId;
+    public String getGroupAnswerId() {
+        return groupAnswerId;
     }
 
-    public void setAnswerId(String answerId) {
-        this.answerId = answerId;
+    public void setGroupAnswerId(String groupAnswerId) {
+        this.groupAnswerId = groupAnswerId;
     }
 
     public String getFormId() {

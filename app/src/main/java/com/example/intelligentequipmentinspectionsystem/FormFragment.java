@@ -1,6 +1,5 @@
 package com.example.intelligentequipmentinspectionsystem;
 
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -16,12 +15,18 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +35,8 @@ import org.json.JSONObject;
  */
 public class FormFragment extends Fragment {
     private RecyclerView recyclerView;
-    private TextView formDate, equipmentNameAndCode, roomNameAndLocation, inspector;
+    private ImageView signature, roomImg;
+    private TextView formDate, roomNameAndLocation, inspector;
     private FloatingActionButton fab;
 
 
@@ -90,85 +96,84 @@ public class FormFragment extends Fragment {
         roomNameAndLocation = (TextView) view.findViewById(R.id.roomNameAndLocation);
         inspector = (TextView) view.findViewById(R.id.inspector);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
-
-
+        signature = (ImageView) view.findViewById(R.id.historySignature);
+        roomImg = (ImageView) view.findViewById(R.id.historyRoomImg);
 
         if (getArguments() != null) {
+            List<JSONObject> jsonObjects = new ArrayList<>();
             // get data from last fragment
             FormFragmentArgs args = FormFragmentArgs.fromBundle(getArguments());
 
             // open dataService to start getting data
-//            DataService dataService = new DataService();
-//
-//            dataService.getJSONObject("answer", args.getAnswerId(), new DataService.ReturnJsonObject() {
-//                @Override
-//                public void onError(String message) {
-//
-//                }
-//
-//                @Override
-//                public void onResponse(JSONObject jsonObject) {
-//
-//
-//                }
-//            });
-            // get room id by id
-//            dataService.getRoomById(args.getRoomId(), new DataService.ResponseListenerForSingle() {
-//                @Override
-//                public void onError(String message) {
-//
-//                }
-//
-//                @Override
-//                public void onResponse(String data1, String data2) {
-//                    Handler handler = new Handler(Looper.getMainLooper());
-//                    handler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            roomNameAndLocation.setText(data1 + " (" + data2 + ")");
-//                        }
-//                    });
-//                }
-//            });
-//
-//            // get equipment by id
-//            dataService.getEquipmentById(args.getEquipmentId(), new DataService.ResponseListenerForSingle() {
-//                @Override
-//                public void onError(String message) {
-//
-//                }
-//
-//                @Override
-//                public void onResponse(String data1, String data2) {
-//                    Handler handler = new Handler(Looper.getMainLooper());
-//                    handler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            equipmentNameAndCode.setText(data1 + " (" + data2 + ")");
-//                            //TODO remove this
-//                            formDate.setText(data1 + " Form");
-//                        }
-//                    });
-//
-//                }
-//            });
+            DataService dataService = new DataService();
+            dataService.getJSONArray("answer", new DataService.ReturnJsonArray() {
+                @Override
+                public void onError(String message) {
 
+                }
 
-            // show the list of questions
-            formDate.setText("2022-04-30");
-            roomNameAndLocation.setText("Snooker_Room (2/F)");
-            inspector.setText("Marco");
-            FormAdapter formAdapter;
-                formAdapter = new FormAdapter(getContext(), GlobalVariable.globalQuestions);
+                @Override
+                public void onResponse(JSONArray jsonArray) {
+                    // Get list of jsonObjects
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            if (jsonArray.getJSONObject(i).getString("unique_id").equals(args.getAnswerGroupId())){
+                                jsonObjects.add(jsonArray.getJSONObject(i));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println("List of JSONObjects in FormFragment: " + jsonObjects);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
 
-            recyclerView.setAdapter(formAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                            // set date, room name and location, inspector
+                            try {
+                                JSONObject obj1 = jsonObjects.get(0);
+                                formDate.setText(obj1.getString("created_at"));
 
+                                String nameAndLocation = obj1.getString("room_name") + " ("+obj1.getString("room_location")+")";
+                                roomNameAndLocation.setText(nameAndLocation);
+
+                                JSONObject obj2 = obj1.getJSONObject("created_by");
+                                inspector.setText(obj2.getString("username"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            // set roomImg, might not have
+                            try {
+                                if (!jsonObjects.get(0).getString("image").equals("")){
+                                    String path = GlobalVariable.BASE_URL.substring(0,GlobalVariable.BASE_URL.length()-1) + jsonObjects.get(0).getString("image");
+                                    System.out.println(path);
+                                    Picasso.get().load(path).into(roomImg);
+                                } else {
+                                    roomImg.setVisibility(View.GONE);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            // set signature
+                            try {
+                                Picasso.get().load(GlobalVariable.BASE_URL.substring(0,GlobalVariable.BASE_URL.length()-1) + jsonObjects.get(0).getString("signature")).into(signature);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            // set adapter
+                            FormAdapter formAdapter = new FormAdapter(getContext(), jsonObjects);
+                            recyclerView.setAdapter(formAdapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        }
+                    });
+
+                }
+            });
 
         }
     }
-
-
-
-
 }

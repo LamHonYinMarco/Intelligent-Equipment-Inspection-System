@@ -12,21 +12,18 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     Context context;
-    List<String> data1;
-    List<String> data2;
-    List<String> data3;
-    List<String> answerIds;
+    List<JSONObject> jsonObjects;
 
-    public HistoryAdapter(Context context, List<String> data1, List<String> data2, List<String> data3, List<String> answerIds) {
+    public HistoryAdapter(Context context, List<JSONObject> jsonObjects) {
         this.context = context;
-        this.data1 = data1;
-        this.data2 = data2;
-        this.data3 = data3;
-        this.answerIds = answerIds;
+        this.jsonObjects = jsonObjects;
     }
 
     @NonNull
@@ -39,9 +36,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 GlobalVariable.backPressed = false;
+//                NavController navController = Navigation.findNavController(view);
+//                HistoryFragmentDirections.ActionHistoryFragmentToFormFragment action = HistoryFragmentDirections.actionHistoryFragmentToFormFragment(answerIds.get(holder.getAdapterPosition()));
+//                navController.navigate(action);
                 NavController navController = Navigation.findNavController(view);
-                HistoryFragmentDirections.ActionHistoryFragmentToFormFragment action = HistoryFragmentDirections.actionHistoryFragmentToFormFragment(answerIds.get(holder.getAdapterPosition()));
-                navController.navigate(action);
+                HistoryFragmentDirections.ActionHistoryFragmentToFormFragment action = null;
+                try {
+                    action = HistoryFragmentDirections.actionHistoryFragmentToFormFragment(jsonObjects.get(holder.getAdapterPosition()).getString("unique_id"));
+                    navController.navigate(action);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
         return holder;
@@ -49,14 +54,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull HistoryAdapter.ViewHolder holder, int position) {
-        holder.titleTV.setText(data1.get(position));
-        holder.subtitleTV.setText(data2.get(position));
-        holder.date.setText(data3.get(position));
+        try {
+            holder.titleTV.setText(jsonObjects.get(position).getString("room_name"));
+            holder.subtitleTV.setText(jsonObjects.get(position).getString("room_location"));
+            holder.date.setText(jsonObjects.get(position).getString("created_at").substring(0,10));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return data1.size();
+        return jsonObjects.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

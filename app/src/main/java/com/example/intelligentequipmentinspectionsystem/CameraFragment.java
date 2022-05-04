@@ -17,13 +17,27 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileOutputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,8 +51,10 @@ public class CameraFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final int CAMERA_REQUEST = 1;
+    public static final int PICK_IMAGE = 2;
     private LinearLayout takePicture;
     private ImageView imageView;
+    private Button confirm;
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
     // TODO: Rename and change types of parameters
@@ -108,7 +124,11 @@ public class CameraFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         takePicture = (LinearLayout) view.findViewById(R.id.take_picture);
+        confirm = (Button) view.findViewById(R.id.sendImage);
+//        selectPicture = (LinearLayout) view.findViewById(R.id.select_picture);
         imageView = (ImageView) view.findViewById(R.id.picture_taken);
+        DataService dataService = new DataService();
+        NavController navController = Navigation.findNavController(view);
         takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,7 +141,70 @@ public class CameraFragment extends Fragment {
                 }
             }
         });
-    }
 
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (imageView.getDrawable() != null){
+                    imageView.buildDrawingCache();
+                    Bitmap bm= imageView.getDrawingCache();
+                    saveBitmap(bm,"ToBeSentToAI");
+                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Download/ToBeSentToAI.jpg";
+                    dataService.postImageToAI(path, new DataService.ReturnJsonObject() {
+                        @Override
+                        public void onError(String message) {
+
+                        }
+
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        CameraFragmentDirections.ActionCameraFragmentToEquipmentFragment action = CameraFragmentDirections.actionCameraFragmentToEquipmentFragment(jsonObject.getString("room_id"),jsonObject.getString("room_name"));
+                                        GlobalVariable.backPressed = false;
+                                        navController.navigate(action);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+
+                        }
+                    });
+                } else {
+                    Toast toast = Toast.makeText(getContext(), "Please take a picture", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+        });
+//        selectPicture.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                Intent intent = new Intent();
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+//            }
+//        });
+    }
+    public void saveBitmap(Bitmap bmp, String imageName) {
+        try {
+            String root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+            String filepath = root + "Download/"+imageName+".jpg";
+
+            FileOutputStream fos = new FileOutputStream(filepath);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            Log.e("Could not save", e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 }

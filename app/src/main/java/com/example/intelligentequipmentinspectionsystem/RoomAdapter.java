@@ -41,7 +41,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
                     System.out.println("holder.getAdapterPosition(): "+ holder.getAdapterPosition());
                     GlobalVariable.backPressed = false;
                     NavController navController = Navigation.findNavController(view);
-                    InspectionFragmentDirections.ActionInspectionFragmentToEquipmentFragment action = InspectionFragmentDirections.actionInspectionFragmentToEquipmentFragment(roomIds.get(holder.getAdapterPosition()));
+                    InspectionFragmentDirections.ActionInspectionFragmentToEquipmentFragment action = InspectionFragmentDirections.actionInspectionFragmentToEquipmentFragment(roomIds.get(holder.getAdapterPosition()),data1.get(holder.getAdapterPosition()));
                     navController.navigate(action);
                 } catch (Exception e) {
                 }

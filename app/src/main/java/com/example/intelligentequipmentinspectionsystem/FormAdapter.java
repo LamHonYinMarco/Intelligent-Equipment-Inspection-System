@@ -13,16 +13,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     private Context context;
-    private List<Question> questions;
+    private List<JSONObject> jsonObjects;
 
 
-    public FormAdapter(Context context, List<Question> questions) {
+    public FormAdapter(Context context, List<JSONObject> jsonObjects) {
         this.context = context;
-        this.questions = questions;
+        this.jsonObjects = jsonObjects;
     }
 
     @NonNull
@@ -37,18 +40,25 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.equipmentTitleTV.setText(questions.get(position).getQuestionTitle());
-        if (questions.get(position).getNormalOrDefective() == "normal"){
-            holder.normal.setChecked(true);
-        } else if(questions.get(position).getNormalOrDefective() == "defective"){
-            holder.defective.setChecked(true);
+        try {
+            holder.equipmentTitleTV.setText(jsonObjects.get(position).getString("equipment_name"));
+            if (jsonObjects.get(position).getString("answer_text").equals("normal")){
+                holder.normal.setChecked(true);
+            } else if(jsonObjects.get(position).getString("answer_text").equals("defective")){
+                holder.defective.setChecked(true);
+            } else {
+                holder.defective.setChecked(true);
+                holder.followUpAction.setText(jsonObjects.get(position).getString("answer_text"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        holder.followUpAction.setText(questions.get(position).getFollowUpAction());
+
     }
 
     @Override
     public int getItemCount() {
-        return questions.size();
+        return jsonObjects.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

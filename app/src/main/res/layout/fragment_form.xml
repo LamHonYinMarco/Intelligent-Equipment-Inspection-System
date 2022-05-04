@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
     tools:context=".FormFragment">
 
     <TextView
         android:id="@+id/formDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
         android:text="Date"
         android:textSize="20dp"
         android:textStyle="bold" />
     <LinearLayout
+        android:layout_below="@+id/formDate"
+        android:id="@+id/roomNameAndLocationLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -34,8 +36,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/inspectorLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/roomNameAndLocationLL"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp">
 
@@ -49,13 +53,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Inspector"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
     </LinearLayout>
+
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/test_room"/>
+        android:layout_marginTop="10dp"
+        android:layout_centerInParent="true"
+        android:id="@+id/historyRoomImg"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/inspectorLL"
+        android:scaleType="centerCrop" />
     <LinearLayout
+        android:layout_below="@+id/historyRoomImg"
+        android:id="@+id/headerLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -122,6 +133,7 @@
     </LinearLayout>
 
     <ScrollView
+        android:layout_below="@+id/headerLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -160,19 +172,19 @@
                 android:id="@+id/historySignature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/test_signature"
                 android:layout_margin="10dp" />
             </LinearLayout>
         </LinearLayout>
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:src="@drawable/ic_baseline_attach_email_24"
-                android:contentDescription="attach to email"
-                android:layout_margin="16dp"
-                />
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_baseline_attach_email_24"
+        android:contentDescription="attach to email"
+        android:layout_margin="16dp"
+        />
+</RelativeLayout>

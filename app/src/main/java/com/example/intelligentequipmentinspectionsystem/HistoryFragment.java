@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -76,15 +78,15 @@ public class HistoryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.historyRecyclerView);
         DataService dataService = new DataService();
-        dataService.getAnswers(new DataService.ResponseListenerFor4ListString() {
+        dataService.getAllGroupAnswers(new DataService.ResponseListenerForJSONObjects() {
             @Override
             public void onError(String message) {
 
             }
 
             @Override
-            public void onResponse(List<String> data1, List<String> data2, List<String> date, List<String> id) {
-                HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), data1, data2, date, id);
+            public void onResponse(List<JSONObject> jsonObjects) {
+                HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), jsonObjects);
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     @Override
@@ -96,5 +98,4 @@ public class HistoryFragment extends Fragment {
             }
         });
     }
-
 }
