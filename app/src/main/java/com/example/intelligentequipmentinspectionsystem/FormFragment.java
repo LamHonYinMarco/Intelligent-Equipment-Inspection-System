@@ -1,5 +1,7 @@
 package com.example.intelligentequipmentinspectionsystem;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,6 +178,28 @@ public class FormFragment extends Fragment {
                 }
             });
 
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dataService.getReportExport(args.getAnswerGroupId(), new DataService.ResponseListenerForSuccess() {
+                        @Override
+                        public void onError(String message) {
+
+                        }
+
+                        @Override
+                        public void onResponse(String filepath) {
+                            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                            StrictMode.setVmPolicy(builder.build());
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                            File file = new File(filepath);
+                            Uri uri = Uri.fromFile(file);
+                            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                            startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+                        }
+                    });
+                }
+            });
         }
     }
 }

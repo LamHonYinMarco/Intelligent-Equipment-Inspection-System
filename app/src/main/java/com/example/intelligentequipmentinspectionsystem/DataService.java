@@ -1,5 +1,7 @@
 package com.example.intelligentequipmentinspectionsystem;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 
 import org.json.JSONArray;
@@ -7,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,7 +84,7 @@ public class DataService {
     public interface ResponseListenerForSuccess {
         void onError(String message);
 
-        void onResponse(boolean successful);
+        void onResponse(String filepath);
     }
 
     public void getRooms(ResponseListenerForList responseListenerForList) {
@@ -388,6 +391,38 @@ public class DataService {
                 } else {
                     System.out.println("getJSONObject failed");
                 }
+            }
+        });
+    }
+
+    public void getReportExport(String groupAnswerId, ResponseListenerForSuccess responseListenerForSuccess) {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient client = okHttpClient.newBuilder()
+                .authenticator(new AccessTokenAuthenticator())
+                .addInterceptor(new AccessTokenInterceptor())
+                .build();
+        Request request = new Request.Builder()
+                .url(GlobalVariable.BASE_URL+ "exportReport/" + groupAnswerId)
+                .method("GET", null)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                System.out.println("getReportExport: onResponse");
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to download file: " + response);
+                }
+                String root = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+                String filepath = root + "Download/"+groupAnswerId+".pdf";
+                FileOutputStream fos = new FileOutputStream(filepath);
+                fos.write(response.body().bytes());
+                fos.close();
+                responseListenerForSuccess.onResponse(filepath);
             }
         });
     }
