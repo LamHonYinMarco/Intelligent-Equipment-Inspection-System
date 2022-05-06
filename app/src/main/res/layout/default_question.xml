@@ -15,9 +15,9 @@
             android:id="@+id/checkItemName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:text="Title"
-            android:textSize="24dp"
+            android:layout_marginStart="15dp"
+            android:text="@string/title"
+            android:textSize="24sp"
             android:textStyle="bold" />
         <ImageView
             android:id="@+id/arrow"
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:visibility="gone">
         <RadioGroup
             android:id="@+id/normalOrDefective"
@@ -44,19 +44,19 @@
                 android:id="@+id/normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Normal" />
+                android:text="@string/normal" />
             <RadioButton
                 android:id="@+id/defective"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Defective"/>
+                android:text="@string/defective"/>
         </RadioGroup>
     </LinearLayout>
     <EditText
         android:id="@+id/followUpAction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:hint="Follow Up Action"
+        android:layout_marginStart="5dp"
+        android:hint="@string/follow_up_action"
         android:visibility="gone"/>
 </LinearLayout>

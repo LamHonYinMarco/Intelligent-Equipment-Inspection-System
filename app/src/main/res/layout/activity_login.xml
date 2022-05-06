@@ -26,7 +26,7 @@
             android:background="@drawable/outline"
             android:backgroundTint="@color/white"
             android:backgroundTintMode="add"
-            android:hint="Server URL" />
+            android:hint="@string/server_url" />
     </RelativeLayout>
 
     <LinearLayout
@@ -38,9 +38,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="40dp"
-            android:text="Username"
+            android:text="@string/username"
             android:textColor="#000000"
             android:textSize="16sp" />
 
@@ -52,15 +52,15 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/outline"
-            android:hint="Type your username"
+            android:hint="@string/type_your_username"
             android:singleLine="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="40dp"
-            android:text="Password"
+            android:text="@string/password"
             android:textColor="#000000"
             android:textSize="16sp" />
 
@@ -72,7 +72,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/outline"
-            android:hint="Type your password"
+            android:hint="@string/type_your_password"
             android:inputType="textPassword"
             android:singleLine="true" />
 
@@ -84,13 +84,6 @@
             android:layout_marginTop="35dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/radius10"
-            android:text="Login" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="30dp"></RelativeLayout>
+            android:text="@string/login" />
     </LinearLayout>
 </LinearLayout>

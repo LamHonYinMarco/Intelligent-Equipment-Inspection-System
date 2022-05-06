@@ -12,15 +12,15 @@
         android:id="@+id/rowTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
-        android:textSize="24dp"
+        android:text="@string/title"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/rowSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Subtitle"
-        android:textSize="16dp" />
+        android:text="@string/subtitle"
+        android:textSize="16sp" />
 
 </LinearLayout>

@@ -3,7 +3,7 @@
     <item
         android:id="@+id/inspectionFragment"
         android:icon="@drawable/ic_baseline_checklist_24"
-        android:title="Inspection" />
+        android:title="@string/inspection" />
 
     <item
         android:id="@+id/cameraFragment"
@@ -18,5 +18,5 @@
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_baseline_manage_accounts_24"
-        android:title="Settings" />
+        android:title="@string/settings" />
 </menu>

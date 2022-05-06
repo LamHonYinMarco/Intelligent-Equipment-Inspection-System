@@ -11,27 +11,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:text="Date"
-        android:textSize="20dp"
+        android:text="@string/date"
+        android:textSize="20sp"
         android:textStyle="bold" />
     <LinearLayout
         android:layout_below="@+id/formDate"
         android:id="@+id/roomNameAndLocationLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Room Name (Location): " />
+            android:text="@string/room_name_location" />
 
         <TextView
             android:id="@+id/roomNameAndLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Room Name (Location)"
+            android:text="@string/room_name_location"
             android:textStyle="bold"/>
     </LinearLayout>
 
@@ -40,19 +40,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/roomNameAndLocationLL"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inspector: " />
+            android:text="@string/inspector" />
 
         <TextView
             android:id="@+id/inspector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inspector"
+            android:text="@string/inspector"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -79,11 +79,11 @@
             android:id="@+id/questionTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_weight="3"
             android:paddingBottom="5dp"
-            android:text="Equipment Items"
+            android:text="@string/equipment_items"
             android:textColor="#000000" />
 
         <LinearLayout
@@ -97,10 +97,9 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_weight="3"
                 android:gravity="center"
-                android:text="Normal" />
+                android:text="@string/normal" />
 
             <View
                 android:layout_width="2dp"
@@ -109,12 +108,10 @@
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:layout_weight="3"
-                android:text="Defective" />
+                android:text="@string/defective" />
             <View
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
@@ -122,12 +119,10 @@
             <TextView
 
                 android:layout_width="0dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:layout_weight="5"
-                android:text="Follow Up Action" />
+                android:text="@string/follow_up_action" />
 
         </LinearLayout>
     </LinearLayout>
@@ -162,8 +157,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="Signature:" />
+                android:layout_marginEnd="10dp"
+                android:text="@string/signature" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -184,7 +179,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_baseline_attach_email_24"
-        android:contentDescription="attach to email"
+        android:contentDescription="@string/attach_to_email"
         android:layout_margin="16dp"
         />
 </RelativeLayout>
